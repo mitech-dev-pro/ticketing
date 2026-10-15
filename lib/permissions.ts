@@ -2,10 +2,11 @@
 //
 // `can()` is a pure function: it takes the shapes below (built from a real Prisma
 // query's `include`, or from seed JSON in tests) and never touches the database
-// itself. Every ticket query must still be filtered through `visibleTicketsWhere(user)`
-// once the real Ticket model exists (Phase 2) — the per-item check here and that query
-// clause must never disagree, or list/count/search pages could leak a ticket this
-// function would refuse to show.
+// itself. Every ticket query must still be filtered through `visibleTicketsWhere(user)` —
+// the per-item check here and that query clause must never disagree, or list/count/search
+// pages could leak a ticket this function would refuse to show.
+
+import type { Prisma } from '@/generated/prisma/client';
 
 export type Action =
   | 'view'
@@ -207,10 +208,41 @@ export function can(
   }
 }
 
-// `visibleTicketsWhere(user)` arrives in Phase 2 once the real Ticket/TicketLeg/Mention
-// Prisma models exist — it must produce a `prisma.ticket.findMany({ where })` clause that
-// agrees with `can('view', user, ticket)` for every ticket, which is what stops a leak via
-// a list, count, badge, search result, report or export.
+// Builds the `prisma.ticket.findMany({ where })` clause every list, count, badge, search,
+// report and export must use. It must agree with `can('view', user, ticket)` for every
+// ticket — tests/integration/visible-tickets.test.ts proves this for every seed user and
+// ticket — or a list could leak a ticket the per-item check would refuse to show.
+export function visibleTicketsWhere(user: PermissionUser): Prisma.TicketWhereInput {
+  if (user.role === 'ADMIN') return {};
+
+  const orClauses: Prisma.TicketWhereInput[] = [{ requesterId: user.id }, { assigneeId: user.id }];
+
+  if (user.role === 'HEAD') {
+    // Head of the current department: allowed even on a confidential ticket.
+    orClauses.push({ legs: { some: { departmentId: user.departmentId, outAt: null } } });
+  }
+
+  orClauses.push({
+    confidential: false,
+    OR: [
+      { legs: { some: { departmentId: user.departmentId, outAt: null } } }, // current dept (team inbox)
+      ...(user.role === 'HEAD' ? [{ requesterDepartmentId: user.departmentId }] : []),
+      {
+        mentions: {
+          some: {
+            OR: [
+              { type: 'PERSON' as const, userId: user.id },
+              { type: 'DEPARTMENT' as const, departmentId: user.departmentId },
+            ],
+          },
+        },
+      },
+      { legs: { some: { departmentId: user.departmentId } } }, // passed through, read-only
+    ],
+  });
+
+  return { OR: orClauses };
+}
 
 // Administration (departments, people, SLA, rules, templates, channels, retention, audit
 // log) is admin-only — docs/PERMISSIONS.md: "Only admins see Administration."

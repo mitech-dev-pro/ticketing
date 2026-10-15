@@ -8,21 +8,26 @@ import type { Role } from '@/lib/permissions';
 
 interface AppShellProps {
   user: { name: string; role: Role };
+  newTicketTrigger?: ReactNode;
   children: ReactNode;
 }
 
-export function AppShell({ user, children }: AppShellProps) {
+export function AppShell({ user, newTicketTrigger, children }: AppShellProps) {
   const [navOpen, setNavOpen] = useState(false);
 
   return (
     <div className="flex min-h-screen">
       <aside className="hidden w-sidebar shrink-0 narrow:flex">
-        <Sidebar role={user.role} />
+        <Sidebar role={user.role} newTicketTrigger={newTicketTrigger} />
       </aside>
 
       <Sheet open={navOpen} onOpenChange={setNavOpen}>
         <SheetContent>
-          <Sidebar role={user.role} onNavigate={() => setNavOpen(false)} />
+          <Sidebar
+            role={user.role}
+            newTicketTrigger={newTicketTrigger}
+            onNavigate={() => setNavOpen(false)}
+          />
         </SheetContent>
 
         <div className="flex min-w-0 flex-1 flex-col bg-bg">

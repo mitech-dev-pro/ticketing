@@ -1,6 +1,6 @@
 // miLife Service Desk — data model.
 // Phase 1 adds User, Session, AuthToken, Department, ServiceType, Holiday, Setting.
-// Phase 2 adds Ticket, TicketLeg, TicketEvent (see BUILD_PLAN.md).
+// Phase 2 adds Ticket, TicketLeg, TicketEvent, TicketMention (see BUILD_PLAN.md).
 
 generator client {
   provider = "prisma-client"
@@ -35,6 +35,46 @@ enum AuthTokenType {
   RESET
 }
 
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  AWAITING_REQUESTER
+  RESOLVED
+  CLOSED
+}
+
+enum Channel {
+  PORTAL
+  EMAIL
+  TEAMS
+}
+
+// MESSAGE/NOTE/ASSIGNED/FORWARDED/PRIORITY_CHANGED/STATUS_CHANGED/RESOLVED/
+// CONFIDENTIAL_CHANGED are written by Phase 2 services. ESCALATED, RATED,
+// BLOCKED_BY, BLOCKS, RELATED_TO only appear in seeded history until their
+// owning phase (escalation/rating/merge) implements the behaviour.
+enum TicketEventType {
+  CREATED
+  MESSAGE
+  NOTE
+  ASSIGNED
+  FORWARDED
+  PRIORITY_CHANGED
+  STATUS_CHANGED
+  RESOLVED
+  CONFIDENTIAL_CHANGED
+  ESCALATED
+  RATED
+  BLOCKED_BY
+  BLOCKS
+  RELATED_TO
+}
+
+enum MentionType {
+  PERSON
+  DEPARTMENT
+}
+
 model Department {
   id                    String        @id @default(cuid())
   slug                  String        @unique
@@ -46,6 +86,9 @@ model Department {
   head                  User?         @relation("DepartmentHead", fields: [headUserId], references: [id])
   members               User[]        @relation("DepartmentMembers")
   serviceTypes          ServiceType[]
+  ticketsRequested      Ticket[]      @relation("TicketRequesterDepartment")
+  ticketLegs            TicketLeg[]
+  ticketMentions        TicketMention[] @relation("TicketMentionDepartment")
   createdAt             DateTime      @default(now())
   updatedAt             DateTime      @updatedAt
 }
@@ -71,6 +114,11 @@ model User {
   headOfDepartment  Department? @relation("DepartmentHead")
   sessions          Session[]
   authTokens        AuthToken[]
+  ticketsRequested  Ticket[]        @relation("TicketRequester")
+  ticketsAssigned   Ticket[]        @relation("TicketAssignee")
+  ticketLegs        TicketLeg[]     @relation("TicketLegBy")
+  ticketEvents      TicketEvent[]   @relation("TicketEventBy")
+  ticketMentions    TicketMention[] @relation("TicketMentionUser")
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt
 }
@@ -105,6 +153,7 @@ model ServiceType {
   needsApproval      Boolean    @default(false)
   attachmentRequired Boolean    @default(false)
   fields             Json
+  tickets            Ticket[]
   createdAt          DateTime   @default(now())
   updatedAt          DateTime   @updatedAt
 }
@@ -119,4 +168,99 @@ model Setting {
   id    String @id @default(cuid())
   key   String @unique
   value Json
+}
+
+// Ticket.number starts at 24827 (D-12): the migration this model ships in ends with
+// `ALTER TABLE Ticket AUTO_INCREMENT = 24827;`, added by hand since Prisma cannot
+// express a start value. Seed tickets keep their prototype numbers (24788–24826).
+model Ticket {
+  number                Int           @id @default(autoincrement())
+  subject               String
+  description           String        @db.Text
+  fields                Json
+  requesterId           String
+  requester             User          @relation("TicketRequester", fields: [requesterId], references: [id])
+  requesterDepartmentId String
+  requesterDepartment   Department    @relation("TicketRequesterDepartment", fields: [requesterDepartmentId], references: [id])
+  serviceTypeId         String
+  serviceType           ServiceType   @relation(fields: [serviceTypeId], references: [id])
+  assigneeId            String?
+  assignee              User?         @relation("TicketAssignee", fields: [assigneeId], references: [id])
+  priority              Priority
+  status                TicketStatus  @default(OPEN)
+  channel               Channel       @default(PORTAL)
+  confidential          Boolean       @default(false)
+  // D-02/D-03: createdAt + target + pausedMs on the ticket's calendar.
+  dueAt                 DateTime
+  firstResponseDueAt    DateTime
+  firstResponseAt       DateTime?
+  resolvedAt            DateTime?
+  pausedAt              DateTime?
+  pausedMs              Int           @default(0)
+  legs                  TicketLeg[]
+  events                TicketEvent[]
+  mentions              TicketMention[]
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  @@index([status])
+  @@index([priority])
+  @@index([assigneeId])
+  @@index([requesterDepartmentId])
+  @@index([confidential])
+}
+
+// The ticket's journey. The leg with outAt = null is its current department
+// (`currentDepartmentId` in lib/permissions.ts); every other leg is a department it
+// passed through, which keeps read-only access after a forward.
+model TicketLeg {
+  id           String     @id @default(cuid())
+  ticketId     Int
+  ticket       Ticket     @relation(fields: [ticketId], references: [number], onDelete: Cascade)
+  departmentId String
+  department   Department @relation(fields: [departmentId], references: [id])
+  byUserId     String
+  by           User       @relation("TicketLegBy", fields: [byUserId], references: [id])
+  reason       String?    @db.Text
+  inAt         DateTime   @default(now())
+  outAt        DateTime?
+
+  @@index([ticketId])
+  @@index([departmentId, outAt])
+}
+
+// Append-only (CLAUDE.md): every ticket change writes one of these in the same
+// transaction. Never updated or deleted.
+model TicketEvent {
+  id        String          @id @default(cuid())
+  ticketId  Int
+  ticket    Ticket          @relation(fields: [ticketId], references: [number], onDelete: Cascade)
+  type      TicketEventType
+  byUserId  String?
+  by        User?           @relation("TicketEventBy", fields: [byUserId], references: [id])
+  body      String?         @db.Text
+  meta      Json?
+  createdAt DateTime        @default(now())
+
+  @@index([ticketId, createdAt])
+}
+
+// Queryable @mentions (D-05, D-07): a real table, not JSON, because
+// `visibleTicketsWhere(user)` must be able to join against it. Exactly one of
+// userId/departmentId is set, matching `type`; enforced by the service layer that
+// writes these rows from a MESSAGE/NOTE event's mentions.
+model TicketMention {
+  id           String      @id @default(cuid())
+  ticketId     Int
+  ticket       Ticket      @relation(fields: [ticketId], references: [number], onDelete: Cascade)
+  type         MentionType
+  userId       String?
+  user         User?       @relation("TicketMentionUser", fields: [userId], references: [id])
+  departmentId String?
+  department   Department? @relation("TicketMentionDepartment", fields: [departmentId], references: [id])
+  createdAt    DateTime    @default(now())
+
+  @@index([ticketId])
+  @@index([userId])
+  @@index([departmentId])
 }
