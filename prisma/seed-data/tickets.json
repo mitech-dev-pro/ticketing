@@ -1,0 +1,1664 @@
+[
+  {
+    "number": 24817,
+    "subject": "miTribute death claim payout overdue — customer escalation",
+    "description": "Mrs Akosua Agyeman (policy MLF-TRB-204871) submitted her late husband's death claim on 12 September. She hasn't been updated and the funeral was last weekend. Please give us a payment date we can share.",
+    "requesterEmail": "esi.quaye@milife.test",
+    "department": "finance",
+    "assigneeEmail": "linda.ansah@milife.test",
+    "serviceType": "Payout release",
+    "priority": "URGENT",
+    "status": "IN_PROGRESS",
+    "channel": "PORTAL",
+    "confidential": false,
+    "fields": {
+      "Claim number": "CLM-77120",
+      "Policy number": "MLF-TRB-204871",
+      "Amount (GHS)": "15,000"
+    },
+    "createdMinutesAgo": 1560,
+    "resolvedMinutesAgo": null,
+    "csat": null,
+    "assetCode": null,
+    "policyNumber": null,
+    "parentNumber": null,
+    "links": [],
+    "tasks": [],
+    "time": [],
+    "legs": [
+      {
+        "department": "claims",
+        "inMinutesAgo": 1560,
+        "outMinutesAgo": 1200,
+        "byEmail": "esi.quaye@milife.test",
+        "reason": null
+      },
+      {
+        "department": "finance",
+        "inMinutesAgo": 1200,
+        "outMinutesAgo": null,
+        "byEmail": "abena.osei@milife.test",
+        "reason": "All claim documents verified (CLM-77120). Payout of GHS 15,000 needs release by Finance."
+      }
+    ],
+    "events": [
+      {
+        "type": "CREATED",
+        "minutesAgo": 1560,
+        "byEmail": "esi.quaye@milife.test",
+        "meta": {
+          "department": "claims"
+        }
+      },
+      {
+        "type": "MESSAGE",
+        "minutesAgo": 1560,
+        "byEmail": "esi.quaye@milife.test",
+        "body": "Mrs Akosua Agyeman (policy MLF-TRB-204871) submitted her late husband's death claim on 12 September. She hasn't been updated and the funeral was last weekend. Please give us a payment date we can share.",
+        "mentions": {
+          "people": [],
+          "departments": []
+        },
+        "attachments": []
+      },
+      {
+        "type": "MESSAGE",
+        "minutesAgo": 1500,
+        "byEmail": "abena.osei@milife.test",
+        "body": "Thanks Esi. Documents are complete — I am sending this to Finance for the payout release.",
+        "mentions": {
+          "people": [],
+          "departments": []
+        },
+        "attachments": []
+      },
+      {
+        "type": "FORWARDED",
+        "minutesAgo": 1200,
+        "byEmail": "abena.osei@milife.test",
+        "body": "All claim documents verified (CLM-77120). Payout of GHS 15,000 needs release by Finance.",
+        "meta": {
+          "from": "claims",
+          "to": "finance"
+        }
+      },
+      {
+        "type": "ASSIGNED",
+        "minutesAgo": 1194,
+        "byEmail": "felix.owusu@milife.test",
+        "meta": {
+          "assigneeEmail": "linda.ansah@milife.test"
+        }
+      },
+      {
+        "type": "NOTE",
+        "minutesAgo": 300,
+        "byEmail": "linda.ansah@milife.test",
+        "body": "Waiting on @Felix Owusu to sign off the GHS 15,000 release. Batch runs at 2pm.",
+        "mentions": {
+          "people": [
+            "felix.owusu@milife.test"
+          ],
+          "departments": []
+        },
+        "attachments": []
+      },
+      {
+        "type": "MESSAGE",
+        "minutesAgo": 190,
+        "byEmail": "esi.quaye@milife.test",
+        "body": "Customer says she will write to the NIC if she does not hear from us today.",
+        "mentions": {
+          "people": [],
+          "departments": []
+        },
+        "attachments": []
+      },
+      {
+        "type": "ESCALATED",
+        "minutesAgo": 180,
+        "byEmail": "esi.quaye@milife.test",
+        "body": "Customer is threatening an NIC complaint and the payout is a day overdue.",
+        "meta": {
+          "level": 1,
+          "manual": true
+        }
+      }
+    ]
+  },
+  {
+    "number": 24814,
+    "subject": "Customer premium deducted twice via MoMo — refund needed",
+    "description": "Customer Kwame Mensah was debited GHS 40 twice on 3 October (transactions 48812093 and 48812107). Is the MoMo integration double-charging?",
+    "requesterEmail": "esi.quaye@milife.test",
+    "department": "finance",
+    "assigneeEmail": null,
+    "serviceType": "Refund request",
+    "priority": "URGENT",
+    "status": "OPEN",
+    "channel": "PORTAL",
+    "confidential": false,
+    "fields": {},
+    "createdMinutesAgo": 380,
+    "resolvedMinutesAgo": null,
+    "csat": null,
+    "assetCode": null,
+    "policyNumber": null,
+    "parentNumber": null,
+    "links": [],
+    "tasks": [],
+    "time": [],
+    "legs": [
+      {
+        "department": "it",
+        "inMinutesAgo": 380,
+        "outMinutesAgo": 240,
+        "byEmail": "esi.quaye@milife.test",
+        "reason": null
+      },
+      {
+        "department": "finance",
+        "inMinutesAgo": 240,
+        "outMinutesAgo": null,
+        "byEmail": "yaw.mensah@milife.test",
+        "reason": "Collections integration is working — both debits were processed. Reversing one is a Finance refund."
+      }
+    ],
+    "events": [
+      {
+        "type": "CREATED",
+        "minutesAgo": 380,
+        "byEmail": "esi.quaye@milife.test",
+        "meta": {
+          "department": "it"
+        }
+      },
+      {
+        "type": "MESSAGE",
+        "minutesAgo": 380,
+        "byEmail": "esi.quaye@milife.test",
+        "body": "Customer Kwame Mensah was debited GHS 40 twice on 3 October (transactions 48812093 and 48812107). Is the MoMo integration double-charging?",
+        "mentions": {
+          "people": [],
+          "departments": []
+        },
+        "attachments": []
+      },
+      {
+        "type": "NOTE",
+        "minutesAgo": 260,
+        "byEmail": "yaw.mensah@milife.test",
+        "body": "Checked collection logs. Two separate requests from the customer wallet, no system fault.",
+        "mentions": {
+          "people": [],
+          "departments": []
+        },
+        "attachments": []
+      },
+      {
+        "type": "FORWARDED",
+        "minutesAgo": 240,
+        "byEmail": "yaw.mensah@milife.test",
+        "body": "Collections integration is working — both debits were processed. Reversing one is a Finance refund.",
+        "meta": {
+          "from": "it",
+          "to": "finance"
+        }
+      },
+      {
+        "type": "MESSAGE",
+        "minutesAgo": 60,
+        "byEmail": "linda.ansah@milife.test",
+        "body": "@Customer Service the refund is approved and will reach the customer wallet within 48 hours. Please let Mr Mensah know.",
+        "mentions": {
+          "people": [],
+          "departments": [
+            "customer-service"
+          ]
+        },
+        "attachments": []
+      }
+    ]
+  },
+  {
+    "number": 24822,
+    "subject": "Locked out of policy admin system after password reset",
+    "description": "I reset my password this morning as prompted, but the policy admin system now says \"account locked\". I have 6 new business files to process before 3pm.",
+    "requesterEmail": "kofi.boateng@milife.test",
+    "department": "it",
+    "assigneeEmail": null,
+    "serviceType": "Access request",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "channel": "PORTAL",
+    "confidential": false,
+    "fields": {},
+    "createdMinutesAgo": 78,
+    "resolvedMinutesAgo": null,
+    "csat": null,
+    "assetCode": null,
+    "policyNumber": null,
+    "parentNumber": null,
+    "links": [],
+    "tasks": [],
+    "time": [],
+    "legs": [
+      {
+        "department": "it",
+        "inMinutesAgo": 78,
+        "outMinutesAgo": null,
+        "byEmail": "kofi.boateng@milife.test",
+        "reason": null
+      }
+    ],
+    "events": [
+      {
+        "type": "CREATED",
+        "minutesAgo": 78,
+        "byEmail": "kofi.boateng@milife.test",
+        "meta": {
+          "department": "it"
+        }
+      },
+      {
+        "type": "MESSAGE",
+        "minutesAgo": 78,
+        "byEmail": "kofi.boateng@milife.test",
+        "body": "I reset my password this morning as prompted, but the policy admin system now says \"account locked\". I have 6 new business files to process before 3pm.",
+        "mentions": {
+          "people": [],
+          "departments": []
+        },
+        "attachments": []
+      }
+    ]
+  },
+  {
+    "number": 24824,
+    "subject": "VPN keeps dropping at Kumasi branch",
+    "description": "VPN keeps dropping at Kumasi branch.",
+    "requesterEmail": "ama.owusu@milife.test",
+    "department": "it",
+    "assigneeEmail": null,
+    "serviceType": "Network & VPN",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "channel": "EMAIL",
+    "confidential": false,
+    "fields": {},
+    "createdMinutesAgo": 30,
+    "resolvedMinutesAgo": null,
+    "csat": null,
+    "assetCode": "MLA-NW-0007",
+    "policyNumber": null,
+    "parentNumber": null,
+    "links": [
+      {
+        "type": "RELATED_TO",
+        "toNumber": 24825
+      }
+    ],
+    "tasks": [],
+    "time": [
+      {
+        "userEmail": "yaw.mensah@milife.test",
+        "minutes": 90,
+        "minutesAgo": 200
+      }
+    ],
+    "legs": [
+      {
+        "department": "it",
+        "inMinutesAgo": 30,
+        "outMinutesAgo": null,
+        "byEmail": "ama.owusu@milife.test",
+        "reason": null
+      }
+    ],
+    "events": [
+      {
+        "type": "CREATED",
+        "minutesAgo": 30,
+        "byEmail": "ama.owusu@milife.test",
+        "meta": {
+          "department": "it"
+        }
+      },
+      {
+        "type": "MESSAGE",
+        "minutesAgo": 30,
+        "byEmail": "ama.owusu@milife.test",
+        "body": "VPN keeps dropping at Kumasi branch.",
+        "mentions": {
+          "people": [],
+          "departments": []
+        },
+        "attachments": []
+      }
+    ]
+  },
+  {
+    "number": 24810,
+    "subject": "Beneficiary change stuck in servicing workflow",
+    "description": "Beneficiary change stuck in servicing workflow.",
+    "requesterEmail": "ama.owusu@milife.test",
+    "department": "it",
+    "assigneeEmail": "yaw.mensah@milife.test",
+    "serviceType": "Software / system bug",
+    "priority": "MEDIUM",
+    "status": "IN_PROGRESS",
+    "channel": "PORTAL",
+    "confidential": false,
+    "fields": {},
+    "createdMinutesAgo": 840,
+    "resolvedMinutesAgo": null,
+    "csat": null,
+    "assetCode": null,
+    "policyNumber": null,
+    "parentNumber": null,
+    "links": [],
+    "tasks": [],
+    "time": [],
+    "legs": [
+      {
+        "department": "operations",
+        "inMinutesAgo": 840,
+        "outMinutesAgo": 300,
+        "byEmail": "ama.owusu@milife.test",
+        "reason": null
+      },
+      {
+        "department": "it",
+        "inMinutesAgo": 300,
+        "outMinutesAgo": null,
+        "byEmail": "isaac.boadu@milife.test",
+        "reason": "Workflow throws an error at the approval step — looks like a system bug, not a servicing issue."
+      }
+    ],
+    "events": [
+      {
+        "type": "CREATED",
+        "minutesAgo": 840,
+        "byEmail": "ama.owusu@milife.test",
+        "meta": {
+          "department": "operations"
+        }
+      },
+      {
+        "type": "MESSAGE",
+        "minutesAgo": 840,
+        "byEmail": "ama.owusu@milife.test",
+        "body": "Beneficiary change stuck in servicing workflow.",
+        "mentions": {
+          "people": [],
+          "departments": []
+        },
+        "attachments": []
+      },
+      {
+        "type": "FORWARDED",
+        "minutesAgo": 300,
+        "byEmail": "isaac.boadu@milife.test",
+        "body": "Workflow throws an error at the approval step — looks like a system bug, not a servicing issue.",
+        "meta": {
+          "from": "operations",
+          "to": "it"
+        }
+      },
+      {
+        "type": "ASSIGNED",
+        "minutesAgo": 294,
+        "byEmail": "kojo.appiah@milife.test",
+        "meta": {
+          "assigneeEmail": "yaw.mensah@milife.test"
+        }
+      },
+      {
+        "type": "NOTE",
+        "minutesAgo": 120,
+        "byEmail": "yaw.mensah@milife.test",
+        "body": "Found the bug at the approval step. @Operations please hold other beneficiary changes until the fix goes live tonight.",
+        "mentions": {
+          "people": [],
+          "departments": [
+            "operations"
+          ]
+        },
+        "attachments": []
+      }
+    ]
+  },
+  {
+    "number": 24823,
+    "subject": "Laptops for 3 new call centre staff",
+    "description": "Laptops for 3 new call centre staff.",
+    "requesterEmail": "afua.sarpong@milife.test",
+    "department": "finance",
+    "assigneeEmail": "felix.owusu@milife.test",
+    "serviceType": "Budget approval",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "channel": "PORTAL",
+    "confidential": false,
+    "fields": {
+      "Amount (GHS)": "27,600",
+      "Cost centre": "CC-410 Call centre"
+    },
+    "createdMinutesAgo": 1400,
+    "resolvedMinutesAgo": null,
+    "csat": null,
+    "assetCode": null,
+    "policyNumber": null,
+    "parentNumber": null,
+    "links": [
+      {
+        "type": "BLOCKS",
+        "toNumber": 24826
+      }
+    ],
+    "tasks": [
+      {
+        "text": "Confirm quotes from two vendors",
+        "done": true,
+        "order": 0
+      },
+      {
+        "text": "Check CC-410 budget balance",
+        "done": true,
+        "order": 1
+      },
+      {
+        "text": "Approve in the finance system",
+        "done": false,
+        "order": 2
+      },
+      {
+        "text": "Notify the requester",
+        "done": false,
+        "order": 3
+      }
+    ],
+    "time": [
+      {
+        "userEmail": "linda.ansah@milife.test",
+        "minutes": 45,
+        "minutesAgo": 300
+      },
+      {
+        "userEmail": "felix.owusu@milife.test",
+        "minutes": 20,
+        "minutesAgo": 90
+      }
+    ],
+    "legs": [
+      {
+        "department": "it",
+        "inMinutesAgo": 1400,
+        "outMinutesAgo": 900,
+        "byEmail": "afua.sarpong@milife.test",
+        "reason": null
+      },
+      {
+        "department": "finance",
+        "inMinutesAgo": 900,
+        "outMinutesAgo": null,
+        "byEmail": "kojo.appiah@milife.test",
+        "reason": "Specs and quote attached (GHS 27,600). Needs budget approval before IT can order."
+      }
+    ],
+    "events": [
+      {
+        "type": "CREATED",
+        "minutesAgo": 1400,
+        "byEmail": "afua.sarpong@milife.test",
+        "meta": {
+          "department": "it"
+        }
+      },
+      {
+        "type": "MESSAGE",
+        "minutesAgo": 1400,
+        "byEmail": "afua.sarpong@milife.test",
+        "body": "Laptops for 3 new call centre staff.",
+        "mentions": {
+          "people": [],
+          "departments": []
+        },
+        "attachments": [
+          {
+            "name": "vendor-quote-telcom.pdf",
+            "size": 412000,
+            "kind": "pdf"
+          },
+          {
+            "name": "cc410-budget.xlsx",
+            "size": 38000,
+            "kind": "file"
+          }
+        ]
+      },
+      {
+        "type": "FORWARDED",
+        "minutesAgo": 900,
+        "byEmail": "kojo.appiah@milife.test",
+        "body": "Specs and quote attached (GHS 27,600). Needs budget approval before IT can order.",
+        "meta": {
+          "from": "it",
+          "to": "finance"
+        }
+      },
+      {
+        "type": "ASSIGNED",
+        "minutesAgo": 894,
+        "byEmail": "felix.owusu@milife.test",
+        "meta": {
+          "assigneeEmail": "felix.owusu@milife.test"
+        }
+      },
+      {
+        "type": "NOTE",
+        "minutesAgo": 200,
+        "byEmail": "felix.owusu@milife.test",
+        "body": "@IT please confirm the quote is still valid for 30 days — approval goes into tomorrow's budget meeting.",
+        "mentions": {
+          "people": [],
+          "departments": [
+            "it"
+          ]
+        },
+        "attachments": []
+      }
+    ]
+  },
+  {
+    "number": 24807,
+    "subject": "Printer on 2nd floor jamming constantly",
+    "description": "Printer on 2nd floor jamming constantly.",
+    "requesterEmail": "kofi.boateng@milife.test",
+    "department": "facilities",
+    "assigneeEmail": "musah.ibrahim@milife.test",
+    "serviceType": "Printers & equipment",
+    "priority": "LOW",
+    "status": "IN_PROGRESS",
+    "channel": "PORTAL",
+    "confidential": false,
+    "fields": {},
+    "createdMinutesAgo": 2200,
+    "resolvedMinutesAgo": null,
+    "csat": null,
+    "assetCode": "MLA-PR-0031",
+    "policyNumber": null,
+    "parentNumber": null,
+    "links": [],
+    "tasks": [],
+    "time": [],
+    "legs": [
+      {
+        "department": "it",
+        "inMinutesAgo": 2200,
+        "outMinutesAgo": 2000,
+        "byEmail": "kofi.boateng@milife.test",
+        "reason": null
+      },
+      {
+        "department": "facilities",
+        "inMinutesAgo": 2000,
+        "outMinutesAgo": null,
+        "byEmail": "edem.kpeli@milife.test",
+        "reason": "Printers are leased and serviced through Facilities — please log with the vendor."
+      }
+    ],
+    "events": [
+      {
+        "type": "CREATED",
+        "minutesAgo": 2200,
+        "byEmail": "kofi.boateng@milife.test",
+        "meta": {
+          "department": "it"
+        }
+      },
+      {
+        "type": "MESSAGE",
+        "minutesAgo": 2200,
+        "byEmail": "kofi.boateng@milife.test",
+        "body": "Printer on 2nd floor jamming constantly.",
+        "mentions": {
+          "people": [],
+          "departments": []
+        },
+        "attachments": [
+          {
+            "name": "printer-error-code.jpg",
+            "size": 284000,
+            "kind": "img"
+          }
+        ]
+      },
+      {
+        "type": "FORWARDED",
+        "minutesAgo": 2000,
+        "byEmail": "edem.kpeli@milife.test",
+        "body": "Printers are leased and serviced through Facilities — please log with the vendor.",
+        "meta": {
+          "from": "it",
+          "to": "facilities"
+        }
+      },
+      {
+        "type": "ASSIGNED",
+        "minutesAgo": 1994,
+        "byEmail": "kwabena.asare@milife.test",
+        "meta": {
+          "assigneeEmail": "musah.ibrahim@milife.test"
+        }
+      }
+    ]
+  },
+  {
+    "number": 24803,
+    "subject": "Partner hospital disputing claim reimbursement",
+    "description": "Partner hospital disputing claim reimbursement.",
+    "requesterEmail": "abena.osei@milife.test",
+    "department": "legal",
+    "assigneeEmail": "mawuli.dzah@milife.test",
+    "serviceType": "Dispute / litigation",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "channel": "PORTAL",
+    "confidential": true,
+    "fields": {},
+    "createdMinutesAgo": 600,
+    "resolvedMinutesAgo": null,
+    "csat": null,
+    "assetCode": null,
+    "policyNumber": null,
+    "parentNumber": null,
+    "links": [],
+    "tasks": [],
+    "time": [],
+    "legs": [
+      {
+        "department": "legal",
+        "inMinutesAgo": 600,
+        "outMinutesAgo": null,
+        "byEmail": "abena.osei@milife.test",
+        "reason": null
+      }
+    ],
+    "events": [
+      {
+        "type": "CREATED",
+        "minutesAgo": 600,
+        "byEmail": "abena.osei@milife.test",
+        "meta": {
+          "department": "legal"
+        }
+      },
+      {
+        "type": "MESSAGE",
+        "minutesAgo": 600,
+        "byEmail": "abena.osei@milife.test",
+        "body": "Partner hospital disputing claim reimbursement.",
+        "mentions": {
+          "people": [],
+          "departments": []
+        },
+        "attachments": []
+      },
+      {
+        "type": "ASSIGNED",
+        "minutesAgo": 594,
+        "byEmail": "mawuli.dzah@milife.test",
+        "meta": {
+          "assigneeEmail": "mawuli.dzah@milife.test"
+        }
+      }
+    ]
+  },
+  {
+    "number": 24819,
+    "subject": "August agent commissions missing — Takoradi",
+    "description": "August agent commissions missing — Takoradi.",
+    "requesterEmail": "daniel.ofori@milife.test",
+    "department": "finance",
+    "assigneeEmail": "linda.ansah@milife.test",
+    "serviceType": "Commission query",
+    "priority": "HIGH",
+    "status": "IN_PROGRESS",
+    "channel": "PORTAL",
+    "confidential": false,
+    "fields": {},
+    "createdMinutesAgo": 410,
+    "resolvedMinutesAgo": null,
+    "csat": null,
+    "assetCode": null,
+    "policyNumber": null,
+    "parentNumber": null,
+    "links": [],
+    "tasks": [],
+    "time": [],
+    "legs": [
+      {
+        "department": "finance",
+        "inMinutesAgo": 410,
+        "outMinutesAgo": null,
+        "byEmail": "daniel.ofori@milife.test",
+        "reason": null
+      }
+    ],
+    "events": [
+      {
+        "type": "CREATED",
+        "minutesAgo": 410,
+        "byEmail": "daniel.ofori@milife.test",
+        "meta": {
+          "department": "finance"
+        }
+      },
+      {
+        "type": "MESSAGE",
+        "minutesAgo": 410,
+        "byEmail": "daniel.ofori@milife.test",
+        "body": "August agent commissions missing — Takoradi.",
+        "mentions": {
+          "people": [],
+          "departments": []
+        },
+        "attachments": []
+      },
+      {
+        "type": "ASSIGNED",
+        "minutesAgo": 404,
+        "byEmail": "felix.owusu@milife.test",
+        "meta": {
+          "assigneeEmail": "linda.ansah@milife.test"
+        }
+      }
+    ]
+  },
+  {
+    "number": 24820,
+    "subject": "Generator not switching over — server room",
+    "description": "Generator not switching over — server room.",
+    "requesterEmail": "edem.kpeli@milife.test",
+    "department": "facilities",
+    "assigneeEmail": "musah.ibrahim@milife.test",
+    "serviceType": "Power & generator",
+    "priority": "URGENT",
+    "status": "IN_PROGRESS",
+    "channel": "TEAMS",
+    "confidential": false,
+    "fields": {
+      "Location": "Achimota HQ",
+      "Affecting servers?": "Yes"
+    },
+    "createdMinutesAgo": 95,
+    "resolvedMinutesAgo": null,
+    "csat": null,
+    "assetCode": "MLA-GN-0002",
+    "policyNumber": null,
+    "parentNumber": null,
+    "links": [],
+    "tasks": [
+      {
+        "text": "Call the Perkins service engineer",
+        "done": true,
+        "order": 0
+      },
+      {
+        "text": "Move servers onto UPS",
+        "done": true,
+        "order": 1
+      },
+      {
+        "text": "Replace fuel filter",
+        "done": false,
+        "order": 2
+      },
+      {
+        "text": "Load test after repair",
+        "done": false,
+        "order": 3
+      }
+    ],
+    "time": [
+      {
+        "userEmail": "musah.ibrahim@milife.test",
+        "minutes": 120,
+        "minutesAgo": 400
+      },
+      {
+        "userEmail": "musah.ibrahim@milife.test",
+        "minutes": 35,
+        "minutesAgo": 60
+      }
+    ],
+    "legs": [
+      {
+        "department": "facilities",
+        "inMinutesAgo": 95,
+        "outMinutesAgo": null,
+        "byEmail": "edem.kpeli@milife.test",
+        "reason": null
+      }
+    ],
+    "events": [
+      {
+        "type": "CREATED",
+        "minutesAgo": 95,
+        "byEmail": "edem.kpeli@milife.test",
+        "meta": {
+          "department": "facilities"
+        }
+      },
+      {
+        "type": "MESSAGE",
+        "minutesAgo": 95,
+        "byEmail": "edem.kpeli@milife.test",
+        "body": "Generator not switching over — server room.",
+        "mentions": {
+          "people": [],
+          "departments": []
+        },
+        "attachments": []
+      },
+      {
+        "type": "ASSIGNED",
+        "minutesAgo": 89,
+        "byEmail": "kwabena.asare@milife.test",
+        "meta": {
+          "assigneeEmail": "musah.ibrahim@milife.test"
+        }
+      },
+      {
+        "type": "MESSAGE",
+        "minutesAgo": 40,
+        "byEmail": "musah.ibrahim@milife.test",
+        "body": "@Kojo Appiah the generator technician arrives at 3pm and needs someone from IT in the server room.",
+        "mentions": {
+          "people": [
+            "kojo.appiah@milife.test"
+          ],
+          "departments": []
+        },
+        "attachments": []
+      }
+    ]
+  },
+  {
+    "number": 24809,
+    "subject": "Policy documents not dispatched for 40 miLegacy policies",
+    "description": "Policy documents not dispatched for 40 miLegacy policies.",
+    "requesterEmail": "prince.tetteh@milife.test",
+    "department": "operations",
+    "assigneeEmail": null,
+    "serviceType": "Printing & dispatch",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "channel": "PORTAL",
+    "confidential": false,
+    "fields": {},
+    "createdMinutesAgo": 1230,
+    "resolvedMinutesAgo": null,
+    "csat": null,
+    "assetCode": null,
+    "policyNumber": null,
+    "parentNumber": null,
+    "links": [],
+    "tasks": [],
+    "time": [],
+    "legs": [
+      {
+        "department": "operations",
+        "inMinutesAgo": 1230,
+        "outMinutesAgo": null,
+        "byEmail": "prince.tetteh@milife.test",
+        "reason": null
+      }
+    ],
+    "events": [
+      {
+        "type": "CREATED",
+        "minutesAgo": 1230,
+        "byEmail": "prince.tetteh@milife.test",
+        "meta": {
+          "department": "operations"
+        }
+      },
+      {
+        "type": "MESSAGE",
+        "minutesAgo": 1230,
+        "byEmail": "prince.tetteh@milife.test",
+        "body": "Policy documents not dispatched for 40 miLegacy policies.",
+        "mentions": {
+          "people": [],
+          "departments": []
+        },
+        "attachments": []
+      }
+    ]
+  },
+  {
+    "number": 24816,
+    "subject": "Medical report required — miLegacy application",
+    "description": "Medical report required — miLegacy application.",
+    "requesterEmail": "prince.tetteh@milife.test",
+    "department": "underwriting",
+    "assigneeEmail": "kofi.boateng@milife.test",
+    "serviceType": "Medical requirements",
+    "priority": "MEDIUM",
+    "status": "IN_PROGRESS",
+    "channel": "PORTAL",
+    "confidential": false,
+    "fields": {},
+    "createdMinutesAgo": 460,
+    "resolvedMinutesAgo": null,
+    "csat": null,
+    "assetCode": null,
+    "policyNumber": null,
+    "parentNumber": null,
+    "links": [],
+    "tasks": [],
+    "time": [],
+    "legs": [
+      {
+        "department": "underwriting",
+        "inMinutesAgo": 460,
+        "outMinutesAgo": null,
+        "byEmail": "prince.tetteh@milife.test",
+        "reason": null
+      }
+    ],
+    "events": [
+      {
+        "type": "CREATED",
+        "minutesAgo": 460,
+        "byEmail": "prince.tetteh@milife.test",
+        "meta": {
+          "department": "underwriting"
+        }
+      },
+      {
+        "type": "MESSAGE",
+        "minutesAgo": 460,
+        "byEmail": "prince.tetteh@milife.test",
+        "body": "Medical report required — miLegacy application.",
+        "mentions": {
+          "people": [],
+          "departments": []
+        },
+        "attachments": []
+      },
+      {
+        "type": "ASSIGNED",
+        "minutesAgo": 454,
+        "byEmail": "yaw.darko@milife.test",
+        "meta": {
+          "assigneeEmail": "kofi.boateng@milife.test"
+        }
+      }
+    ]
+  },
+  {
+    "number": 24811,
+    "subject": "Artwork for miKids back-to-school campaign",
+    "description": "Artwork for miKids back-to-school campaign.",
+    "requesterEmail": "nana.agyei@milife.test",
+    "department": "marketing",
+    "assigneeEmail": "efua.badu@milife.test",
+    "serviceType": "Campaign artwork",
+    "priority": "LOW",
+    "status": "IN_PROGRESS",
+    "channel": "PORTAL",
+    "confidential": false,
+    "fields": {},
+    "createdMinutesAgo": 1700,
+    "resolvedMinutesAgo": null,
+    "csat": null,
+    "assetCode": null,
+    "policyNumber": null,
+    "parentNumber": null,
+    "links": [],
+    "tasks": [],
+    "time": [],
+    "legs": [
+      {
+        "department": "marketing",
+        "inMinutesAgo": 1700,
+        "outMinutesAgo": null,
+        "byEmail": "nana.agyei@milife.test",
+        "reason": null
+      }
+    ],
+    "events": [
+      {
+        "type": "CREATED",
+        "minutesAgo": 1700,
+        "byEmail": "nana.agyei@milife.test",
+        "meta": {
+          "department": "marketing"
+        }
+      },
+      {
+        "type": "MESSAGE",
+        "minutesAgo": 1700,
+        "byEmail": "nana.agyei@milife.test",
+        "body": "Artwork for miKids back-to-school campaign.",
+        "mentions": {
+          "people": [],
+          "departments": []
+        },
+        "attachments": []
+      },
+      {
+        "type": "ASSIGNED",
+        "minutesAgo": 1694,
+        "byEmail": "akua.danso@milife.test",
+        "meta": {
+          "assigneeEmail": "efua.badu@milife.test"
+        }
+      }
+    ]
+  },
+  {
+    "number": 24806,
+    "subject": "Leave balance incorrect on payroll portal",
+    "description": "Leave balance incorrect on payroll portal.",
+    "requesterEmail": "esi.quaye@milife.test",
+    "department": "hr",
+    "assigneeEmail": "afua.sarpong@milife.test",
+    "serviceType": "Leave & payroll",
+    "priority": "LOW",
+    "status": "AWAITING_REQUESTER",
+    "channel": "PORTAL",
+    "confidential": true,
+    "fields": {},
+    "createdMinutesAgo": 3100,
+    "resolvedMinutesAgo": null,
+    "csat": null,
+    "assetCode": null,
+    "policyNumber": null,
+    "parentNumber": null,
+    "links": [],
+    "tasks": [],
+    "time": [],
+    "legs": [
+      {
+        "department": "hr",
+        "inMinutesAgo": 3100,
+        "outMinutesAgo": null,
+        "byEmail": "esi.quaye@milife.test",
+        "reason": null
+      }
+    ],
+    "events": [
+      {
+        "type": "CREATED",
+        "minutesAgo": 3100,
+        "byEmail": "esi.quaye@milife.test",
+        "meta": {
+          "department": "hr"
+        }
+      },
+      {
+        "type": "MESSAGE",
+        "minutesAgo": 3100,
+        "byEmail": "esi.quaye@milife.test",
+        "body": "Leave balance incorrect on payroll portal.",
+        "mentions": {
+          "people": [],
+          "departments": []
+        },
+        "attachments": []
+      },
+      {
+        "type": "ASSIGNED",
+        "minutesAgo": 3094,
+        "byEmail": "gifty.mensah@milife.test",
+        "meta": {
+          "assigneeEmail": "afua.sarpong@milife.test"
+        }
+      }
+    ]
+  },
+  {
+    "number": 24812,
+    "subject": "Q3 complaints extract for NIC return",
+    "description": "Q3 complaints extract for NIC return.",
+    "requesterEmail": "selasi.amegah@milife.test",
+    "department": "customer-service",
+    "assigneeEmail": "adwoa.nyarko@milife.test",
+    "serviceType": "Complaint data request",
+    "priority": "HIGH",
+    "status": "IN_PROGRESS",
+    "channel": "PORTAL",
+    "confidential": false,
+    "fields": {},
+    "createdMinutesAgo": 180,
+    "resolvedMinutesAgo": null,
+    "csat": null,
+    "assetCode": null,
+    "policyNumber": null,
+    "parentNumber": null,
+    "links": [],
+    "tasks": [],
+    "time": [],
+    "legs": [
+      {
+        "department": "customer-service",
+        "inMinutesAgo": 180,
+        "outMinutesAgo": null,
+        "byEmail": "selasi.amegah@milife.test",
+        "reason": null
+      }
+    ],
+    "events": [
+      {
+        "type": "CREATED",
+        "minutesAgo": 180,
+        "byEmail": "selasi.amegah@milife.test",
+        "meta": {
+          "department": "customer-service"
+        }
+      },
+      {
+        "type": "MESSAGE",
+        "minutesAgo": 180,
+        "byEmail": "selasi.amegah@milife.test",
+        "body": "Q3 complaints extract for NIC return.",
+        "mentions": {
+          "people": [],
+          "departments": []
+        },
+        "attachments": []
+      },
+      {
+        "type": "ASSIGNED",
+        "minutesAgo": 174,
+        "byEmail": "adwoa.nyarko@milife.test",
+        "meta": {
+          "assigneeEmail": "adwoa.nyarko@milife.test"
+        }
+      }
+    ]
+  },
+  {
+    "number": 24815,
+    "subject": "Contract renewal letter for Yaw Mensah",
+    "description": "Contract renewal letter for Yaw Mensah.",
+    "requesterEmail": "kojo.appiah@milife.test",
+    "department": "hr",
+    "assigneeEmail": "gifty.mensah@milife.test",
+    "serviceType": "Letters & certificates",
+    "priority": "MEDIUM",
+    "status": "IN_PROGRESS",
+    "channel": "PORTAL",
+    "confidential": true,
+    "fields": {},
+    "createdMinutesAgo": 700,
+    "resolvedMinutesAgo": null,
+    "csat": null,
+    "assetCode": null,
+    "policyNumber": null,
+    "parentNumber": null,
+    "links": [],
+    "tasks": [],
+    "time": [],
+    "legs": [
+      {
+        "department": "hr",
+        "inMinutesAgo": 700,
+        "outMinutesAgo": null,
+        "byEmail": "kojo.appiah@milife.test",
+        "reason": null
+      }
+    ],
+    "events": [
+      {
+        "type": "CREATED",
+        "minutesAgo": 700,
+        "byEmail": "kojo.appiah@milife.test",
+        "meta": {
+          "department": "hr"
+        }
+      },
+      {
+        "type": "MESSAGE",
+        "minutesAgo": 700,
+        "byEmail": "kojo.appiah@milife.test",
+        "body": "Contract renewal letter for Yaw Mensah.",
+        "mentions": {
+          "people": [],
+          "departments": []
+        },
+        "attachments": []
+      },
+      {
+        "type": "ASSIGNED",
+        "minutesAgo": 694,
+        "byEmail": "gifty.mensah@milife.test",
+        "meta": {
+          "assigneeEmail": "gifty.mensah@milife.test"
+        }
+      }
+    ]
+  },
+  {
+    "number": 24798,
+    "subject": "Air conditioning faulty — Kumasi front office",
+    "description": "Air conditioning faulty — Kumasi front office.",
+    "requesterEmail": "ama.owusu@milife.test",
+    "department": "facilities",
+    "assigneeEmail": "musah.ibrahim@milife.test",
+    "serviceType": "Air conditioning",
+    "priority": "MEDIUM",
+    "status": "CLOSED",
+    "channel": "PORTAL",
+    "confidential": false,
+    "fields": {},
+    "createdMinutesAgo": 4300,
+    "resolvedMinutesAgo": 3900,
+    "csat": 5,
+    "assetCode": "MLA-AC-0012",
+    "policyNumber": null,
+    "parentNumber": null,
+    "links": [],
+    "tasks": [],
+    "time": [],
+    "legs": [
+      {
+        "department": "facilities",
+        "inMinutesAgo": 4300,
+        "outMinutesAgo": null,
+        "byEmail": "ama.owusu@milife.test",
+        "reason": null
+      }
+    ],
+    "events": [
+      {
+        "type": "CREATED",
+        "minutesAgo": 4300,
+        "byEmail": "ama.owusu@milife.test",
+        "meta": {
+          "department": "facilities"
+        }
+      },
+      {
+        "type": "MESSAGE",
+        "minutesAgo": 4300,
+        "byEmail": "ama.owusu@milife.test",
+        "body": "Air conditioning faulty — Kumasi front office.",
+        "mentions": {
+          "people": [],
+          "departments": []
+        },
+        "attachments": []
+      },
+      {
+        "type": "ASSIGNED",
+        "minutesAgo": 4294,
+        "byEmail": "kwabena.asare@milife.test",
+        "meta": {
+          "assigneeEmail": "musah.ibrahim@milife.test"
+        }
+      },
+      {
+        "type": "RESOLVED",
+        "minutesAgo": 3900,
+        "byEmail": "musah.ibrahim@milife.test",
+        "body": null
+      },
+      {
+        "type": "RATED",
+        "minutesAgo": 3860,
+        "byEmail": "ama.owusu@milife.test",
+        "meta": {
+          "stars": 5
+        }
+      }
+    ]
+  },
+  {
+    "number": 24795,
+    "subject": "Call centre phone queue dropping calls",
+    "description": "Call centre phone queue dropping calls.",
+    "requesterEmail": "esi.quaye@milife.test",
+    "department": "it",
+    "assigneeEmail": "edem.kpeli@milife.test",
+    "serviceType": "Software / system bug",
+    "priority": "HIGH",
+    "status": "CLOSED",
+    "channel": "PORTAL",
+    "confidential": false,
+    "fields": {},
+    "createdMinutesAgo": 5200,
+    "resolvedMinutesAgo": 4800,
+    "csat": 3,
+    "assetCode": "MLA-PH-0100",
+    "policyNumber": null,
+    "parentNumber": null,
+    "links": [],
+    "tasks": [],
+    "time": [],
+    "legs": [
+      {
+        "department": "it",
+        "inMinutesAgo": 5200,
+        "outMinutesAgo": null,
+        "byEmail": "esi.quaye@milife.test",
+        "reason": null
+      }
+    ],
+    "events": [
+      {
+        "type": "CREATED",
+        "minutesAgo": 5200,
+        "byEmail": "esi.quaye@milife.test",
+        "meta": {
+          "department": "it"
+        }
+      },
+      {
+        "type": "MESSAGE",
+        "minutesAgo": 5200,
+        "byEmail": "esi.quaye@milife.test",
+        "body": "Call centre phone queue dropping calls.",
+        "mentions": {
+          "people": [],
+          "departments": []
+        },
+        "attachments": []
+      },
+      {
+        "type": "ASSIGNED",
+        "minutesAgo": 5194,
+        "byEmail": "kojo.appiah@milife.test",
+        "meta": {
+          "assigneeEmail": "edem.kpeli@milife.test"
+        }
+      },
+      {
+        "type": "RESOLVED",
+        "minutesAgo": 4800,
+        "byEmail": "edem.kpeli@milife.test",
+        "body": null
+      },
+      {
+        "type": "RATED",
+        "minutesAgo": 4760,
+        "byEmail": "esi.quaye@milife.test",
+        "meta": {
+          "stars": 3
+        }
+      }
+    ]
+  },
+  {
+    "number": 24791,
+    "subject": "VPN access from home for month-end close",
+    "description": "VPN access from home for month-end close.",
+    "requesterEmail": "kofi.boateng@milife.test",
+    "department": "it",
+    "assigneeEmail": "yaw.mensah@milife.test",
+    "serviceType": "Network & VPN",
+    "priority": "MEDIUM",
+    "status": "RESOLVED",
+    "channel": "PORTAL",
+    "confidential": false,
+    "fields": {},
+    "createdMinutesAgo": 6100,
+    "resolvedMinutesAgo": 240,
+    "csat": null,
+    "assetCode": null,
+    "policyNumber": null,
+    "parentNumber": null,
+    "links": [],
+    "tasks": [],
+    "time": [],
+    "legs": [
+      {
+        "department": "it",
+        "inMinutesAgo": 6100,
+        "outMinutesAgo": null,
+        "byEmail": "kofi.boateng@milife.test",
+        "reason": null
+      }
+    ],
+    "events": [
+      {
+        "type": "CREATED",
+        "minutesAgo": 6100,
+        "byEmail": "kofi.boateng@milife.test",
+        "meta": {
+          "department": "it"
+        }
+      },
+      {
+        "type": "MESSAGE",
+        "minutesAgo": 6100,
+        "byEmail": "kofi.boateng@milife.test",
+        "body": "VPN access from home for month-end close.",
+        "mentions": {
+          "people": [],
+          "departments": []
+        },
+        "attachments": []
+      },
+      {
+        "type": "ASSIGNED",
+        "minutesAgo": 6094,
+        "byEmail": "kojo.appiah@milife.test",
+        "meta": {
+          "assigneeEmail": "yaw.mensah@milife.test"
+        }
+      },
+      {
+        "type": "RESOLVED",
+        "minutesAgo": 240,
+        "byEmail": "yaw.mensah@milife.test",
+        "body": null
+      }
+    ]
+  },
+  {
+    "number": 24826,
+    "subject": "Email accounts and system access for 3 new call centre staff",
+    "description": "Email accounts and system access for 3 new call centre staff.",
+    "requesterEmail": "afua.sarpong@milife.test",
+    "department": "it",
+    "assigneeEmail": null,
+    "serviceType": "Access request",
+    "priority": "MEDIUM",
+    "status": "OPEN",
+    "channel": "PORTAL",
+    "confidential": false,
+    "fields": {
+      "System": "Email, policy admin (read-only), telephony"
+    },
+    "createdMinutesAgo": 800,
+    "resolvedMinutesAgo": null,
+    "csat": null,
+    "assetCode": null,
+    "policyNumber": null,
+    "parentNumber": 24823,
+    "links": [
+      {
+        "type": "BLOCKED_BY",
+        "toNumber": 24823
+      }
+    ],
+    "tasks": [
+      {
+        "text": "Create 3 email accounts",
+        "done": true,
+        "order": 0
+      },
+      {
+        "text": "Grant policy admin read-only access",
+        "done": false,
+        "order": 1
+      },
+      {
+        "text": "Set up telephony logins",
+        "done": false,
+        "order": 2
+      }
+    ],
+    "time": [],
+    "legs": [
+      {
+        "department": "it",
+        "inMinutesAgo": 800,
+        "outMinutesAgo": null,
+        "byEmail": "afua.sarpong@milife.test",
+        "reason": null
+      }
+    ],
+    "events": [
+      {
+        "type": "CREATED",
+        "minutesAgo": 800,
+        "byEmail": "afua.sarpong@milife.test",
+        "meta": {
+          "department": "it"
+        }
+      },
+      {
+        "type": "MESSAGE",
+        "minutesAgo": 800,
+        "byEmail": "afua.sarpong@milife.test",
+        "body": "Email accounts and system access for 3 new call centre staff.",
+        "mentions": {
+          "people": [],
+          "departments": []
+        },
+        "attachments": []
+      }
+    ]
+  },
+  {
+    "number": 24825,
+    "subject": "Cannot sign in to policy admin system",
+    "description": "Getting \"account locked\" when I try to log in to the policy admin system from Kumasi.",
+    "requesterEmail": "ama.owusu@milife.test",
+    "department": "it",
+    "assigneeEmail": null,
+    "serviceType": "Access request",
+    "priority": "HIGH",
+    "status": "OPEN",
+    "channel": "TEAMS",
+    "confidential": false,
+    "fields": {},
+    "createdMinutesAgo": 50,
+    "resolvedMinutesAgo": null,
+    "csat": null,
+    "assetCode": null,
+    "policyNumber": null,
+    "parentNumber": null,
+    "links": [
+      {
+        "type": "RELATED_TO",
+        "toNumber": 24824
+      }
+    ],
+    "tasks": [],
+    "time": [],
+    "legs": [
+      {
+        "department": "it",
+        "inMinutesAgo": 50,
+        "outMinutesAgo": null,
+        "byEmail": "ama.owusu@milife.test",
+        "reason": null
+      }
+    ],
+    "events": [
+      {
+        "type": "CREATED",
+        "minutesAgo": 50,
+        "byEmail": "ama.owusu@milife.test",
+        "meta": {
+          "department": "it"
+        }
+      },
+      {
+        "type": "MESSAGE",
+        "minutesAgo": 50,
+        "byEmail": "ama.owusu@milife.test",
+        "body": "Getting \"account locked\" when I try to log in to the policy admin system from Kumasi.",
+        "mentions": {
+          "people": [],
+          "departments": []
+        },
+        "attachments": []
+      }
+    ]
+  },
+  {
+    "number": 24788,
+    "subject": "Desk phone not working — Takoradi office",
+    "description": "Desk phone not working — Takoradi office.",
+    "requesterEmail": "daniel.ofori@milife.test",
+    "department": "facilities",
+    "assigneeEmail": "musah.ibrahim@milife.test",
+    "serviceType": "Office repairs",
+    "priority": "LOW",
+    "status": "RESOLVED",
+    "channel": "EMAIL",
+    "confidential": false,
+    "fields": {},
+    "createdMinutesAgo": 7400,
+    "resolvedMinutesAgo": 4600,
+    "csat": null,
+    "assetCode": null,
+    "policyNumber": null,
+    "parentNumber": null,
+    "links": [],
+    "tasks": [],
+    "time": [],
+    "legs": [
+      {
+        "department": "facilities",
+        "inMinutesAgo": 7400,
+        "outMinutesAgo": null,
+        "byEmail": "daniel.ofori@milife.test",
+        "reason": null
+      }
+    ],
+    "events": [
+      {
+        "type": "CREATED",
+        "minutesAgo": 7400,
+        "byEmail": "daniel.ofori@milife.test",
+        "meta": {
+          "department": "facilities"
+        }
+      },
+      {
+        "type": "MESSAGE",
+        "minutesAgo": 7400,
+        "byEmail": "daniel.ofori@milife.test",
+        "body": "Desk phone not working — Takoradi office.",
+        "mentions": {
+          "people": [],
+          "departments": []
+        },
+        "attachments": []
+      },
+      {
+        "type": "ASSIGNED",
+        "minutesAgo": 7394,
+        "byEmail": "kwabena.asare@milife.test",
+        "meta": {
+          "assigneeEmail": "musah.ibrahim@milife.test"
+        }
+      },
+      {
+        "type": "RESOLVED",
+        "minutesAgo": 4600,
+        "byEmail": "musah.ibrahim@milife.test",
+        "body": null
+      }
+    ]
+  }
+]

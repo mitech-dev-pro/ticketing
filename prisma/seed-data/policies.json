@@ -1,0 +1,42 @@
+[
+  {
+    "number": "MLF-TRB-204871",
+    "product": "miTribute — Funeral plan",
+    "premium": "GHS 85 / month",
+    "payMethod": "MTN MoMo",
+    "since": "Mar 2019",
+    "holder": "Akosua Agyeman"
+  },
+  {
+    "number": "MLF-FUT-330912",
+    "product": "miFuture — Mobile insurance",
+    "premium": "GHS 40 / month",
+    "payMethod": "Telecel Cash",
+    "since": "Jun 2023",
+    "holder": "Kwame Mensah"
+  },
+  {
+    "number": "MLF-KID-118230",
+    "product": "miKids — Education plan",
+    "premium": "GHS 250 / month",
+    "payMethod": "Bank debit order",
+    "since": "Jan 2021",
+    "holder": "Efua Asante"
+  },
+  {
+    "number": "MLF-WAY-552013",
+    "product": "miWay — Mobile insurance",
+    "premium": "GHS 25 / month",
+    "payMethod": "MTN MoMo",
+    "since": "Feb 2025",
+    "holder": "Yaw Frimpong"
+  },
+  {
+    "number": "MLF-LGC-440178",
+    "product": "miLegacy — Income protection",
+    "premium": "GHS 120 / month",
+    "payMethod": "Bank debit order",
+    "since": "Sep 2026",
+    "holder": "Joseph Larbi"
+  }
+]

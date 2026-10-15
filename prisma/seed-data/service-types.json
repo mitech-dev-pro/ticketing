@@ -1,0 +1,570 @@
+[
+  {
+    "department": "claims",
+    "name": "Claim escalation",
+    "description": "Escalate a delayed or disputed claim for review.",
+    "defaultPriority": "HIGH",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": []
+  },
+  {
+    "department": "claims",
+    "name": "Payout delay",
+    "description": "Chase a claim payout that is late reaching the beneficiary.",
+    "defaultPriority": "HIGH",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": []
+  },
+  {
+    "department": "claims",
+    "name": "Document verification",
+    "description": "Check claim documents such as burial permits and Ghana Cards.",
+    "defaultPriority": "MEDIUM",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": []
+  },
+  {
+    "department": "customer-service",
+    "name": "Customer escalation",
+    "description": "Hand over a customer issue the front line could not resolve.",
+    "defaultPriority": "HIGH",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": []
+  },
+  {
+    "department": "customer-service",
+    "name": "Complaint data request",
+    "description": "Get complaint figures for reports or NIC returns.",
+    "defaultPriority": "MEDIUM",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": []
+  },
+  {
+    "department": "customer-service",
+    "name": "Call centre system",
+    "description": "Faults with the call centre phones, queues or recording.",
+    "defaultPriority": "URGENT",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": []
+  },
+  {
+    "department": "underwriting",
+    "name": "Medical requirements",
+    "description": "Medical tests or reports needed before cover is accepted.",
+    "defaultPriority": "MEDIUM",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": []
+  },
+  {
+    "department": "underwriting",
+    "name": "New business review",
+    "description": "Underwriting review of a new policy application.",
+    "defaultPriority": "MEDIUM",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": []
+  },
+  {
+    "department": "underwriting",
+    "name": "Policy reinstatement",
+    "description": "Bring a lapsed policy back into force.",
+    "defaultPriority": "MEDIUM",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": []
+  },
+  {
+    "department": "it",
+    "name": "Access request",
+    "description": "New accounts, locked accounts and system permissions.",
+    "defaultPriority": "HIGH",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": [
+      {
+        "label": "System",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Policy admin system",
+          "Email",
+          "VPN",
+          "Finance system",
+          "Claims system"
+        ]
+      },
+      {
+        "label": "Error message",
+        "type": "text",
+        "required": false
+      }
+    ]
+  },
+  {
+    "department": "it",
+    "name": "Hardware",
+    "description": "Laptops, desktops, monitors and phones, new or faulty.",
+    "defaultPriority": "MEDIUM",
+    "needsApproval": true,
+    "attachmentRequired": false,
+    "fields": [
+      {
+        "label": "Device type",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Laptop",
+          "Desktop",
+          "Monitor",
+          "Phone",
+          "Other"
+        ]
+      },
+      {
+        "label": "Quantity",
+        "type": "text",
+        "required": true
+      },
+      {
+        "label": "Needed by",
+        "type": "date",
+        "required": false
+      }
+    ]
+  },
+  {
+    "department": "it",
+    "name": "Software / system bug",
+    "description": "Something in a miLife system is not working as it should.",
+    "defaultPriority": "MEDIUM",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": []
+  },
+  {
+    "department": "it",
+    "name": "Network & VPN",
+    "description": "Internet, Wi-Fi, branch links and remote access.",
+    "defaultPriority": "HIGH",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": []
+  },
+  {
+    "department": "hr",
+    "name": "Leave & payroll",
+    "description": "Leave balances, payslips and salary questions.",
+    "defaultPriority": "MEDIUM",
+    "needsApproval": false,
+    "attachmentRequired": true,
+    "fields": [
+      {
+        "label": "Staff ID",
+        "type": "text",
+        "required": true
+      },
+      {
+        "label": "Leave type",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Annual",
+          "Sick",
+          "Maternity / paternity",
+          "Study"
+        ]
+      }
+    ]
+  },
+  {
+    "department": "hr",
+    "name": "Onboarding",
+    "description": "Set up a new starter: contract, ID, equipment and access.",
+    "defaultPriority": "MEDIUM",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": [
+      {
+        "label": "New starter name",
+        "type": "text",
+        "required": true
+      },
+      {
+        "label": "Start date",
+        "type": "date",
+        "required": true
+      },
+      {
+        "label": "Role",
+        "type": "text",
+        "required": true
+      }
+    ]
+  },
+  {
+    "department": "hr",
+    "name": "Letters & certificates",
+    "description": "Employment letters, introduction letters and certificates.",
+    "defaultPriority": "LOW",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": []
+  },
+  {
+    "department": "finance",
+    "name": "Refund request",
+    "description": "Return premiums paid in error or after cancellation.",
+    "defaultPriority": "MEDIUM",
+    "needsApproval": true,
+    "attachmentRequired": true,
+    "fields": [
+      {
+        "label": "Policy number",
+        "type": "text",
+        "required": true
+      },
+      {
+        "label": "Transaction IDs",
+        "type": "text",
+        "required": true
+      },
+      {
+        "label": "Amount (GHS)",
+        "type": "text",
+        "required": true
+      },
+      {
+        "label": "Wallet / account",
+        "type": "select",
+        "required": false,
+        "options": [
+          "MTN MoMo",
+          "Telecel Cash",
+          "AirtelTigo Money",
+          "Bank"
+        ]
+      }
+    ]
+  },
+  {
+    "department": "finance",
+    "name": "Commission query",
+    "description": "Questions about agent commission statements.",
+    "defaultPriority": "MEDIUM",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": [
+      {
+        "label": "Agent code",
+        "type": "text",
+        "required": true
+      },
+      {
+        "label": "Month",
+        "type": "text",
+        "required": true
+      }
+    ]
+  },
+  {
+    "department": "finance",
+    "name": "Payout release",
+    "description": "Release an approved claim payment.",
+    "defaultPriority": "HIGH",
+    "needsApproval": true,
+    "attachmentRequired": true,
+    "fields": [
+      {
+        "label": "Claim number",
+        "type": "text",
+        "required": true
+      },
+      {
+        "label": "Policy number",
+        "type": "text",
+        "required": true
+      },
+      {
+        "label": "Amount (GHS)",
+        "type": "text",
+        "required": true
+      }
+    ]
+  },
+  {
+    "department": "finance",
+    "name": "Budget approval",
+    "description": "Approve spending against a cost centre.",
+    "defaultPriority": "MEDIUM",
+    "needsApproval": true,
+    "attachmentRequired": true,
+    "fields": [
+      {
+        "label": "Amount (GHS)",
+        "type": "text",
+        "required": true
+      },
+      {
+        "label": "Cost centre",
+        "type": "text",
+        "required": true
+      }
+    ]
+  },
+  {
+    "department": "compliance",
+    "name": "AML / KYC check",
+    "description": "Customer due diligence and anti-money-laundering checks.",
+    "defaultPriority": "MEDIUM",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": []
+  },
+  {
+    "department": "compliance",
+    "name": "Regulatory query (NIC)",
+    "description": "Questions or returns for the National Insurance Commission.",
+    "defaultPriority": "HIGH",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": []
+  },
+  {
+    "department": "compliance",
+    "name": "Data protection request",
+    "description": "Requests to access, correct or delete personal data.",
+    "defaultPriority": "MEDIUM",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": [
+      {
+        "label": "Data subject",
+        "type": "text",
+        "required": true
+      },
+      {
+        "label": "Request type",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Access",
+          "Correction",
+          "Deletion"
+        ]
+      }
+    ]
+  },
+  {
+    "department": "operations",
+    "name": "Policy servicing",
+    "description": "Changes to existing policies: beneficiaries, addresses, plans.",
+    "defaultPriority": "MEDIUM",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": []
+  },
+  {
+    "department": "operations",
+    "name": "Printing & dispatch",
+    "description": "Print and send policy documents and welcome packs.",
+    "defaultPriority": "MEDIUM",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": []
+  },
+  {
+    "department": "operations",
+    "name": "Premium collections",
+    "description": "Missed debits, MoMo collections and arrears.",
+    "defaultPriority": "MEDIUM",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": []
+  },
+  {
+    "department": "sales-distribution",
+    "name": "Agent onboarding",
+    "description": "Register and set up a new sales agent.",
+    "defaultPriority": "MEDIUM",
+    "needsApproval": true,
+    "attachmentRequired": false,
+    "fields": []
+  },
+  {
+    "department": "sales-distribution",
+    "name": "Lead assignment",
+    "description": "Allocate leads to agents and branches.",
+    "defaultPriority": "MEDIUM",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": []
+  },
+  {
+    "department": "sales-distribution",
+    "name": "Bancassurance support",
+    "description": "Help for partner bank branches selling miLife products.",
+    "defaultPriority": "MEDIUM",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": []
+  },
+  {
+    "department": "legal",
+    "name": "Contract review",
+    "description": "Legal review of a contract before signing.",
+    "defaultPriority": "MEDIUM",
+    "needsApproval": true,
+    "attachmentRequired": true,
+    "fields": [
+      {
+        "label": "Counterparty",
+        "type": "text",
+        "required": true
+      },
+      {
+        "label": "Contract value (GHS)",
+        "type": "text",
+        "required": false
+      },
+      {
+        "label": "Needed by",
+        "type": "date",
+        "required": false
+      }
+    ]
+  },
+  {
+    "department": "legal",
+    "name": "Dispute / litigation",
+    "description": "Customer disputes, legal letters and court matters.",
+    "defaultPriority": "HIGH",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": []
+  },
+  {
+    "department": "legal",
+    "name": "Policy wording",
+    "description": "Draft or check product and policy wording.",
+    "defaultPriority": "LOW",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": []
+  },
+  {
+    "department": "facilities",
+    "name": "Power & generator",
+    "description": "Power cuts, generator faults and UPS.",
+    "defaultPriority": "URGENT",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": [
+      {
+        "label": "Location",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Achimota HQ",
+          "Kumasi",
+          "Takoradi"
+        ]
+      },
+      {
+        "label": "Affecting servers?",
+        "type": "select",
+        "required": true,
+        "options": [
+          "Yes",
+          "No"
+        ]
+      }
+    ]
+  },
+  {
+    "department": "facilities",
+    "name": "Air conditioning",
+    "description": "Air conditioners not cooling, leaking or noisy.",
+    "defaultPriority": "MEDIUM",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": []
+  },
+  {
+    "department": "facilities",
+    "name": "Office repairs",
+    "description": "Doors, furniture, leaks, lights and general repairs.",
+    "defaultPriority": "MEDIUM",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": []
+  },
+  {
+    "department": "facilities",
+    "name": "Printers & equipment",
+    "description": "Printers, copiers and shared office equipment.",
+    "defaultPriority": "MEDIUM",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": []
+  },
+  {
+    "department": "marketing",
+    "name": "Campaign artwork",
+    "description": "Design for campaigns, posters and social media.",
+    "defaultPriority": "LOW",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": [
+      {
+        "label": "Product",
+        "type": "select",
+        "required": true,
+        "options": [
+          "miTribute",
+          "miKids",
+          "miLegacy",
+          "miFuture",
+          "miWay",
+          "miCash",
+          "miDream",
+          "Group Life"
+        ]
+      },
+      {
+        "label": "Deadline",
+        "type": "date",
+        "required": true
+      },
+      {
+        "label": "Sizes / formats",
+        "type": "text",
+        "required": false
+      }
+    ]
+  },
+  {
+    "department": "marketing",
+    "name": "Branded materials",
+    "description": "Business cards, banners, brochures and branded items.",
+    "defaultPriority": "LOW",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": []
+  },
+  {
+    "department": "marketing",
+    "name": "Event support",
+    "description": "Branding and logistics for events and activations.",
+    "defaultPriority": "LOW",
+    "needsApproval": false,
+    "attachmentRequired": false,
+    "fields": []
+  }
+]

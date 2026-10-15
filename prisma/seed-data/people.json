@@ -1,0 +1,185 @@
+[
+  {
+    "name": "Abena Osei",
+    "email": "abena.osei@milife.test",
+    "role": "HEAD",
+    "department": "claims",
+    "branch": "ACHIMOTA_HQ"
+  },
+  {
+    "name": "Kweku Addo",
+    "email": "kweku.addo@milife.test",
+    "role": "MEMBER",
+    "department": "claims",
+    "branch": "ACHIMOTA_HQ"
+  },
+  {
+    "name": "Adwoa Nyarko",
+    "email": "adwoa.nyarko@milife.test",
+    "role": "HEAD",
+    "department": "customer-service",
+    "branch": "ACHIMOTA_HQ"
+  },
+  {
+    "name": "Esi Quaye",
+    "email": "esi.quaye@milife.test",
+    "role": "MEMBER",
+    "department": "customer-service",
+    "branch": "ACHIMOTA_HQ"
+  },
+  {
+    "name": "Ama Owusu",
+    "email": "ama.owusu@milife.test",
+    "role": "MEMBER",
+    "department": "customer-service",
+    "branch": "KUMASI"
+  },
+  {
+    "name": "Yaw Darko",
+    "email": "yaw.darko@milife.test",
+    "role": "HEAD",
+    "department": "underwriting",
+    "branch": "ACHIMOTA_HQ"
+  },
+  {
+    "name": "Kofi Boateng",
+    "email": "kofi.boateng@milife.test",
+    "role": "MEMBER",
+    "department": "underwriting",
+    "branch": "ACHIMOTA_HQ"
+  },
+  {
+    "name": "Kojo Appiah",
+    "email": "kojo.appiah@milife.test",
+    "role": "HEAD",
+    "department": "it",
+    "branch": "ACHIMOTA_HQ"
+  },
+  {
+    "name": "Yaw Mensah",
+    "email": "yaw.mensah@milife.test",
+    "role": "MEMBER",
+    "department": "it",
+    "branch": "ACHIMOTA_HQ"
+  },
+  {
+    "name": "Edem Kpeli",
+    "email": "edem.kpeli@milife.test",
+    "role": "MEMBER",
+    "department": "it",
+    "branch": "ACHIMOTA_HQ"
+  },
+  {
+    "name": "Gifty Mensah",
+    "email": "gifty.mensah@milife.test",
+    "role": "HEAD",
+    "department": "hr",
+    "branch": "ACHIMOTA_HQ"
+  },
+  {
+    "name": "Afua Sarpong",
+    "email": "afua.sarpong@milife.test",
+    "role": "MEMBER",
+    "department": "hr",
+    "branch": "ACHIMOTA_HQ"
+  },
+  {
+    "name": "Felix Owusu",
+    "email": "felix.owusu@milife.test",
+    "role": "HEAD",
+    "department": "finance",
+    "branch": "ACHIMOTA_HQ"
+  },
+  {
+    "name": "Linda Ansah",
+    "email": "linda.ansah@milife.test",
+    "role": "MEMBER",
+    "department": "finance",
+    "branch": "ACHIMOTA_HQ"
+  },
+  {
+    "name": "Selasi Amegah",
+    "email": "selasi.amegah@milife.test",
+    "role": "HEAD",
+    "department": "compliance",
+    "branch": "ACHIMOTA_HQ"
+  },
+  {
+    "name": "Isaac Boadu",
+    "email": "isaac.boadu@milife.test",
+    "role": "HEAD",
+    "department": "operations",
+    "branch": "ACHIMOTA_HQ"
+  },
+  {
+    "name": "Prince Ankrah",
+    "email": "prince.ankrah@milife.test",
+    "role": "MEMBER",
+    "department": "operations",
+    "branch": "ACHIMOTA_HQ"
+  },
+  {
+    "name": "Nana Agyei",
+    "email": "nana.agyei@milife.test",
+    "role": "HEAD",
+    "department": "sales-distribution",
+    "branch": "ACHIMOTA_HQ"
+  },
+  {
+    "name": "Prince Tetteh",
+    "email": "prince.tetteh@milife.test",
+    "role": "MEMBER",
+    "department": "sales-distribution",
+    "branch": "KUMASI"
+  },
+  {
+    "name": "Daniel Ofori",
+    "email": "daniel.ofori@milife.test",
+    "role": "MEMBER",
+    "department": "sales-distribution",
+    "branch": "TAKORADI"
+  },
+  {
+    "name": "Mawuli Dzah",
+    "email": "mawuli.dzah@milife.test",
+    "role": "HEAD",
+    "department": "legal",
+    "branch": "ACHIMOTA_HQ"
+  },
+  {
+    "name": "Kwabena Asare",
+    "email": "kwabena.asare@milife.test",
+    "role": "HEAD",
+    "department": "facilities",
+    "branch": "ACHIMOTA_HQ"
+  },
+  {
+    "name": "Musah Ibrahim",
+    "email": "musah.ibrahim@milife.test",
+    "role": "MEMBER",
+    "department": "facilities",
+    "branch": "ACHIMOTA_HQ"
+  },
+  {
+    "name": "Akua Danso",
+    "email": "akua.danso@milife.test",
+    "role": "HEAD",
+    "department": "marketing",
+    "branch": "ACHIMOTA_HQ"
+  },
+  {
+    "name": "Efua Badu",
+    "email": "efua.badu@milife.test",
+    "role": "MEMBER",
+    "department": "marketing",
+    "branch": "ACHIMOTA_HQ"
+  },
+  {
+    "name": "Ama Serwaa",
+    "email": "ama.serwaa@milife.test",
+    "role": "ADMIN",
+    "department": "it",
+    "branch": "ACHIMOTA_HQ",
+    "title": "Admin · COO office"
+  }
+]

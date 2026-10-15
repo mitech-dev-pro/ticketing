@@ -1,0 +1,60 @@
+[
+  {
+    "key": "tp1",
+    "name": "New starter setup",
+    "department": "it",
+    "serviceType": "Hardware",
+    "priority": "MEDIUM",
+    "subject": "New starter setup — laptop, email and system access",
+    "body": "Name:\nRole:\nStart date:\nSystems needed:",
+    "repeat": "NEVER",
+    "active": false
+  },
+  {
+    "key": "tp2",
+    "name": "Monthly payroll variance report",
+    "department": "hr",
+    "serviceType": "Leave & payroll",
+    "priority": "MEDIUM",
+    "subject": "Monthly payroll variance report",
+    "body": "Please share the payroll variance report for this month.",
+    "repeat": "MONTHLY",
+    "repeatRule": "25th",
+    "active": true
+  },
+  {
+    "key": "tp3",
+    "name": "Quarterly NIC complaints extract",
+    "department": "customer-service",
+    "serviceType": "Complaint data request",
+    "priority": "HIGH",
+    "subject": "Quarterly complaints extract for NIC return",
+    "body": "Extract for the quarter, anonymised as per the template.",
+    "repeat": "QUARTERLY",
+    "repeatRule": "1st week",
+    "active": true
+  },
+  {
+    "key": "tp4",
+    "name": "Generator service check",
+    "department": "facilities",
+    "serviceType": "Power & generator",
+    "priority": "LOW",
+    "subject": "Monthly generator service check — Achimota HQ",
+    "body": "Routine monthly service and load test.",
+    "repeat": "MONTHLY",
+    "repeatRule": "1st",
+    "active": true
+  },
+  {
+    "key": "tp5",
+    "name": "Campaign artwork request",
+    "department": "marketing",
+    "serviceType": "Campaign artwork",
+    "priority": "LOW",
+    "subject": "Artwork request — ",
+    "body": "Audience:\nKey message:\nChannels:",
+    "repeat": "NEVER",
+    "active": false
+  }
+]

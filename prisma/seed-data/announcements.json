@@ -1,0 +1,25 @@
+[
+  {
+    "level": "OUTAGE",
+    "title": "Email is down at the Kumasi branch",
+    "body": "IT is working with the provider. Use Microsoft Teams for urgent messages until it is back.",
+    "audience": {
+      "type": "BRANCH",
+      "value": "KUMASI"
+    },
+    "byEmail": "kojo.appiah@milife.test",
+    "minutesAgo": 50,
+    "ticketNumber": 24824
+  },
+  {
+    "level": "INFO",
+    "title": "Generator maintenance on Saturday",
+    "body": "Power will be off at Achimota HQ from 08:00 to 11:00 on Sat 17 Oct.",
+    "audience": {
+      "type": "ALL"
+    },
+    "byEmail": "kwabena.asare@milife.test",
+    "minutesAgo": 1440,
+    "ticketNumber": null
+  }
+]

@@ -1,0 +1,12 @@
+// miLife Service Desk — data model.
+// Phase 0: no models yet. Phase 1 adds User, Session, AuthToken, Department,
+// ServiceType, Holiday, Setting (see BUILD_PLAN.md).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}

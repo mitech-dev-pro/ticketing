@@ -1,0 +1,98 @@
+[
+  {
+    "slug": "claims",
+    "name": "Claims",
+    "hue": 30,
+    "headEmail": "abena.osei@milife.test",
+    "emailAlias": "claims@milife.test",
+    "confidentialByDefault": false
+  },
+  {
+    "slug": "customer-service",
+    "name": "Customer Service",
+    "hue": 180,
+    "headEmail": "adwoa.nyarko@milife.test",
+    "emailAlias": "customer-service@milife.test",
+    "confidentialByDefault": false
+  },
+  {
+    "slug": "underwriting",
+    "name": "Underwriting",
+    "hue": 265,
+    "headEmail": "yaw.darko@milife.test",
+    "emailAlias": "underwriting@milife.test",
+    "confidentialByDefault": false
+  },
+  {
+    "slug": "it",
+    "name": "IT",
+    "hue": 235,
+    "headEmail": "kojo.appiah@milife.test",
+    "emailAlias": "it@milife.test",
+    "confidentialByDefault": false
+  },
+  {
+    "slug": "hr",
+    "name": "HR",
+    "hue": 325,
+    "headEmail": "gifty.mensah@milife.test",
+    "emailAlias": "hr@milife.test",
+    "confidentialByDefault": true
+  },
+  {
+    "slug": "finance",
+    "name": "Finance",
+    "hue": 85,
+    "headEmail": "felix.owusu@milife.test",
+    "emailAlias": "finance@milife.test",
+    "confidentialByDefault": false
+  },
+  {
+    "slug": "compliance",
+    "name": "Compliance",
+    "hue": 295,
+    "headEmail": "selasi.amegah@milife.test",
+    "emailAlias": "compliance@milife.test",
+    "confidentialByDefault": true
+  },
+  {
+    "slug": "operations",
+    "name": "Operations",
+    "hue": 205,
+    "headEmail": "isaac.boadu@milife.test",
+    "emailAlias": "operations@milife.test",
+    "confidentialByDefault": false
+  },
+  {
+    "slug": "sales-distribution",
+    "name": "Sales & Distribution",
+    "hue": 55,
+    "headEmail": "nana.agyei@milife.test",
+    "emailAlias": "sales-distribution@milife.test",
+    "confidentialByDefault": false
+  },
+  {
+    "slug": "legal",
+    "name": "Legal",
+    "hue": 10,
+    "headEmail": "mawuli.dzah@milife.test",
+    "emailAlias": "legal@milife.test",
+    "confidentialByDefault": true
+  },
+  {
+    "slug": "facilities",
+    "name": "Facilities",
+    "hue": 140,
+    "headEmail": "kwabena.asare@milife.test",
+    "emailAlias": "facilities@milife.test",
+    "confidentialByDefault": false
+  },
+  {
+    "slug": "marketing",
+    "name": "Marketing",
+    "hue": 350,
+    "headEmail": "akua.danso@milife.test",
+    "emailAlias": "marketing@milife.test",
+    "confidentialByDefault": false
+  }
+]

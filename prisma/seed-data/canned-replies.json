@@ -1,0 +1,72 @@
+[
+  {
+    "department": "it",
+    "title": "Account unlocked",
+    "body": "I have unlocked your account. Wait 5 minutes, then sign in again. Reply here if it is still locked."
+  },
+  {
+    "department": "it",
+    "title": "Engineer visit",
+    "body": "An engineer will come to your desk today. Please leave the device switched on."
+  },
+  {
+    "department": "it",
+    "title": "Forwarding to Facilities",
+    "body": "Printers and office equipment are handled by Facilities — forwarding this to them now."
+  },
+  {
+    "department": "finance",
+    "title": "Refund approved",
+    "body": "The refund has been approved and will reach the wallet within 48 hours."
+  },
+  {
+    "department": "finance",
+    "title": "Need approval documents",
+    "body": "Please attach the approved quote or budget line so we can proceed."
+  },
+  {
+    "department": "claims",
+    "title": "Documents incomplete",
+    "body": "Some claim documents are missing. Please send the burial permit and the claimant Ghana Card."
+  },
+  {
+    "department": "claims",
+    "title": "Sent for payout",
+    "body": "The claim is verified and has been sent to Finance for payout release."
+  },
+  {
+    "department": "hr",
+    "title": "Form needed",
+    "body": "Please attach your approved leave form so we can correct the balance."
+  },
+  {
+    "department": "hr",
+    "title": "Letter ready",
+    "body": "Your letter is ready for collection at the HR office, or we can email a signed PDF."
+  },
+  {
+    "department": "facilities",
+    "title": "Technician booked",
+    "body": "A technician is booked and will arrive within 4 working hours."
+  },
+  {
+    "department": "facilities",
+    "title": "Logged with vendor",
+    "body": "This has been logged with the vendor. We will share their reference."
+  },
+  {
+    "department": null,
+    "title": "Acknowledge",
+    "body": "Thanks — we have received this and will update you shortly."
+  },
+  {
+    "department": null,
+    "title": "Need more detail",
+    "body": "Could you share a screenshot or reference number so we can look into this?"
+  },
+  {
+    "department": null,
+    "title": "Resolved",
+    "body": "This is now resolved. Please rate the service, or reopen it if anything is still wrong."
+  }
+]

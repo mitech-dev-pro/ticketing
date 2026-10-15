@@ -1,0 +1,157 @@
+[
+  {
+    "key": "kb1",
+    "department": "it",
+    "title": "Unlock your account or reset your password",
+    "excerpt": "Accounts lock after 5 failed sign-in attempts. Most can be unlocked in two minutes without a ticket.",
+    "body": "1. Go to the staff portal and choose \"Forgot password\".\n2. Enter your staff email and approve the prompt on your phone.\n3. Wait 5 minutes before signing in to the policy admin system — it syncs on a delay.\n\nStill locked after 15 minutes? Send an Access request to IT with the exact error message.",
+    "tags": [
+      "password",
+      "locked",
+      "login",
+      "access",
+      "sign in"
+    ],
+    "views": 412,
+    "updatedDaysAgo": 5
+  },
+  {
+    "key": "kb2",
+    "department": "it",
+    "title": "Connecting to the VPN from home or a branch",
+    "excerpt": "Install the client from Software Centre and sign in with your staff email.",
+    "body": "1. Open Software Centre and install \"miLife VPN\".\n2. Sign in with your staff email and approve the phone prompt.\n3. Choose the Achimota HQ gateway, or Kumasi if you are in the Ashanti region.\n\nIf it drops every few minutes, restart your router first, then send a Network & VPN ticket with your branch name.",
+    "tags": [
+      "vpn",
+      "network",
+      "remote",
+      "home",
+      "dropping"
+    ],
+    "views": 268,
+    "updatedDaysAgo": 21
+  },
+  {
+    "key": "kb3",
+    "department": "it",
+    "title": "Requesting laptops and equipment for new staff",
+    "excerpt": "IT prepares devices once HR confirms the start date and Finance approves the budget.",
+    "body": "1. HR sends a Hardware ticket to IT with the start date and role.\n2. IT attaches specs and a quote, then forwards the ticket to Finance for budget approval.\n3. Once approved, devices are ready within 5 working days.\n\nAllow at least two weeks before the start date.",
+    "tags": [
+      "laptop",
+      "hardware",
+      "new staff",
+      "onboarding",
+      "equipment"
+    ],
+    "views": 97,
+    "updatedDaysAgo": 30
+  },
+  {
+    "key": "kb4",
+    "department": "finance",
+    "title": "Refunding a duplicate MoMo or Telecel Cash deduction",
+    "excerpt": "Finance refunds confirmed duplicate debits within 48 hours. Send both transaction IDs.",
+    "body": "1. Confirm both transaction IDs with the customer or the telco statement.\n2. Send a Refund request to Finance with the policy number and both IDs.\n3. Finance reverses one deduction and Customer Service updates the customer.\n\nIT only needs to be involved if more than 10 customers report the same issue on the same day.",
+    "tags": [
+      "refund",
+      "momo",
+      "telecel",
+      "deducted",
+      "twice",
+      "duplicate"
+    ],
+    "views": 187,
+    "updatedDaysAgo": 7
+  },
+  {
+    "key": "kb5",
+    "department": "finance",
+    "title": "Agent commission statement schedule",
+    "excerpt": "Statements close on the 25th; commissions are paid on the 5th of the next month.",
+    "body": "Statements close on the 25th of each month and are published by the 28th. Commissions are paid on the 5th.\n\nMissing commission? Send a Commission query to Finance within 30 days with the agent code and policy numbers.",
+    "tags": [
+      "commission",
+      "agent",
+      "statement"
+    ],
+    "views": 143,
+    "updatedDaysAgo": 14
+  },
+  {
+    "key": "kb6",
+    "department": "claims",
+    "title": "Death claim documents checklist",
+    "excerpt": "What Claims needs before a death claim can be verified and paid.",
+    "body": "• Death certificate\n• Burial permit\n• Claimant Ghana Card\n• Policy schedule\n• Bank or MoMo details for payment\n\nComplete claims are verified within 2 working days, then sent to Finance for payout release.",
+    "tags": [
+      "claim",
+      "death",
+      "payout",
+      "documents",
+      "funeral"
+    ],
+    "views": 356,
+    "updatedDaysAgo": 2
+  },
+  {
+    "key": "kb7",
+    "department": "hr",
+    "title": "Correcting your leave balance",
+    "excerpt": "Balances sync nightly from payroll. Raise a ticket if it has not updated after 24 hours.",
+    "body": "1. Check that your leave form was approved by your head of department.\n2. Wait 24 hours for the nightly payroll sync.\n3. If it is still wrong, send a Leave & payroll ticket to HR and attach the approved form.",
+    "tags": [
+      "leave",
+      "payroll",
+      "balance"
+    ],
+    "views": 121,
+    "updatedDaysAgo": 30
+  },
+  {
+    "key": "kb8",
+    "department": "facilities",
+    "title": "Reporting power, generator or air conditioning faults",
+    "excerpt": "Server room and branch-wide outages are always Urgent.",
+    "body": "For server room or branch-wide power loss, send an Urgent Power & generator ticket — the Facilities duty officer is paged straight away.\n\nFor air conditioning, office repairs and printers, use the matching category. Printers are leased, so Facilities logs faults with the vendor.",
+    "tags": [
+      "generator",
+      "power",
+      "air conditioning",
+      "printer",
+      "repairs"
+    ],
+    "views": 76,
+    "updatedDaysAgo": 30
+  },
+  {
+    "key": "kb9",
+    "department": "marketing",
+    "title": "Ordering campaign artwork and branded materials",
+    "excerpt": "Allow 5 working days for artwork and 10 for printed materials.",
+    "body": "Send a Campaign artwork ticket to Marketing with the product (miKids, miTribute, miLegacy…), audience, sizes and deadline. Attach any copy already approved by Compliance.",
+    "tags": [
+      "artwork",
+      "flyer",
+      "campaign",
+      "banner",
+      "branded"
+    ],
+    "views": 58,
+    "updatedDaysAgo": 14
+  },
+  {
+    "key": "kb10",
+    "department": "operations",
+    "title": "Policy document dispatch timelines",
+    "excerpt": "New policy documents are printed within 3 working days and dispatched by courier.",
+    "body": "Documents are printed within 3 working days of a policy being issued. Branch dispatches go out every Tuesday and Friday.\n\nIf documents are more than 7 days late, send a Printing & dispatch ticket to Operations with the policy numbers.",
+    "tags": [
+      "documents",
+      "dispatch",
+      "printing"
+    ],
+    "views": 64,
+    "updatedDaysAgo": 21
+  }
+]

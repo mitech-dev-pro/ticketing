@@ -1,0 +1,6 @@
+node_modules
+.next
+generated
+design_handoff_milife_service_desk
+docs/PLAN.pdf
+prisma/seed-data

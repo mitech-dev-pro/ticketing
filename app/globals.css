@@ -1,0 +1,400 @@
+/*
+ * miLife Service Desk — design tokens
+ * Source: design_handoff_milife_service_desk/README.md ("Design tokens") and the
+ * :root / [data-theme=dark] blocks of prototype v7. Values are final; do not tune.
+ *
+ * Tailwind v4 is configured in CSS (there is no tailwind.config.ts).
+ * Theme switching: next-themes sets class="dark" on <html> ("Match system" = system).
+ */
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------- 1. Raw values (light) ---------- */
+:root {
+  color-scheme: light;
+
+  /* brand — identical in both themes */
+  --navy: #12143a;
+  --navy-2: #1b1e4d;
+  --teal: #00bab3;
+  --teal-deep: #007a74; /* primary buttons, links */
+  --teal-hover: #005d58;
+
+  /* neutrals */
+  --bg: #f4f5f8;
+  --surface: #ffffff;
+  --ink: #14162b;
+  --ink-2: #3d4160;
+  --ink-3: #585c72;
+  --muted: #6b6f88;
+  --faint: #8a8ea6;
+  --line: #e3e5ec;
+  --line-2: #eceef3;
+  --line-3: #f1f2f6;
+  --hover: #f7f8fb;
+  --subtle: #e9ebf1; /* segmented-control track */
+  --control-border: #cdd0dc;
+
+  /* status: background / text */
+  --status-open-bg: #e6edfb;
+  --status-open-fg: #2b54a3;
+  --status-progress-bg: #dff5f3;
+  --status-progress-fg: #00625c;
+  --status-pending-bg: #fbf0dc;
+  --status-pending-fg: #86580a;
+  --status-resolved-bg: #e4f2e2;
+  --status-resolved-fg: #36692e;
+  --status-closed-bg: #ecedf1;
+  --status-closed-fg: #585c72;
+
+  /* tints */
+  --danger-bg: #fdecea;
+  --danger-fg: #a3301f;
+  --note-bg: #fffaf0;
+  --merge-bg: #f8f6fd;
+  --merge-fg: #5a43a8;
+  --drop-bg: #e8f7f6; /* board drop target */
+
+  /* priority — identical in both themes */
+  --priority-urgent: #d2452f;
+  --priority-high: #c27412;
+  --priority-medium: #3b66b5;
+  --priority-low: #7d8095;
+
+  /* shadows */
+  --shadow-popover: 0 14px 40px rgba(18, 20, 58, 0.16);
+  --shadow-modal: 0 20px 60px rgba(0, 0, 0, 0.22);
+  --shadow-toast: 0 10px 30px rgba(18, 20, 58, 0.3);
+
+  /* motion */
+  --ease-modal: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-pop: cubic-bezier(0.2, 0.9, 0.3, 1.25);
+}
+
+/* ---------- 2. Raw values (dark) ---------- */
+.dark {
+  color-scheme: dark;
+
+  --bg: #0e1029;
+  --surface: #171a3a;
+  --ink: #e8eaf6;
+  --ink-2: #c3c7e6;
+  --ink-3: #a3a8cc;
+  --muted: #9ea3c7;
+  --faint: #8388b5;
+  --line: #2a2e5c;
+  --line-2: #23264f;
+  --line-3: #23264f;
+  --hover: #1f2250;
+  --subtle: #262a56;
+  --control-border: #3a3f75;
+
+  --status-open-bg: #1b2752;
+  --status-open-fg: #9db8f0;
+  --status-progress-bg: #113538;
+  --status-progress-fg: #6fe0d8;
+  --status-pending-bg: #352b17;
+  --status-pending-fg: #f0c46a;
+  --status-resolved-bg: #19321f;
+  --status-resolved-fg: #9bd68f;
+  --status-closed-bg: #262a56;
+  --status-closed-fg: #a3a8cc;
+
+  --danger-bg: #3a1c26;
+  --danger-fg: #ff9c8c;
+  --note-bg: #2e2716;
+  --merge-bg: #272150;
+  --merge-fg: #c1b2f5;
+  --drop-bg: #113538;
+}
+
+/* ---------- 3. Tailwind theme (utilities: bg-surface, text-muted, border-line …) ---------- */
+@theme inline {
+  --color-navy: var(--navy);
+  --color-navy-2: var(--navy-2);
+  --color-teal: var(--teal);
+  --color-teal-deep: var(--teal-deep);
+  --color-teal-hover: var(--teal-hover);
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+  --color-line-3: var(--line-3);
+  --color-hover: var(--hover);
+  --color-subtle: var(--subtle);
+  --color-control: var(--control-border);
+
+  --color-status-open: var(--status-open-bg);
+  --color-status-open-fg: var(--status-open-fg);
+  --color-status-progress: var(--status-progress-bg);
+  --color-status-progress-fg: var(--status-progress-fg);
+  --color-status-pending: var(--status-pending-bg);
+  --color-status-pending-fg: var(--status-pending-fg);
+  --color-status-resolved: var(--status-resolved-bg);
+  --color-status-resolved-fg: var(--status-resolved-fg);
+  --color-status-closed: var(--status-closed-bg);
+  --color-status-closed-fg: var(--status-closed-fg);
+
+  --color-danger: var(--danger-bg);
+  --color-danger-fg: var(--danger-fg);
+  --color-note: var(--note-bg);
+  --color-merge: var(--merge-bg);
+  --color-merge-fg: var(--merge-fg);
+  --color-drop: var(--drop-bg);
+
+  --color-urgent: var(--priority-urgent);
+  --color-high: var(--priority-high);
+  --color-medium: var(--priority-medium);
+  --color-low: var(--priority-low);
+
+  /* next/font variables are set on <html> in app/layout.tsx */
+  --font-sans: var(--font-figtree), system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  /* type scale from the README */
+  --text-label: 10.5px; /* mono uppercase labels, letter-spacing .06em */
+  --text-small: 12px;
+  --text-sub: 12.5px;
+  --text-base: 13.5px;
+  --text-body: 14px; /* conversation, line-height 1.62 */
+  --text-subtitle: 14px;
+  --text-subject: 21px;
+  --text-title: 24px;
+
+  /* radius: chips/badges 5–6, inputs/buttons 7–8, cards 10–12, pills 999 */
+  --radius-chip: 6px;
+  --radius-control: 8px;
+  --radius-card: 12px;
+
+  --shadow-popover: var(--shadow-popover);
+  --shadow-modal: var(--shadow-modal);
+  --shadow-toast: var(--shadow-toast);
+
+  /* layout constants */
+  --spacing-sidebar: 240px;
+  --spacing-sidebar-mobile: 264px;
+  --spacing-header: 58px;
+  --spacing-split-list: 310px;
+  --breakpoint-narrow: 760px; /* below: off-canvas menu */
+  --breakpoint-wide: 1180px; /* and above: split view */
+
+  /* motion */
+  --animate-fade-up: fade-up 300ms ease both;
+  --animate-fade: fade 180ms ease both;
+  --animate-modal: modal 240ms var(--ease-modal) both;
+  --animate-slide-in: slide-in 320ms ease both;
+  --animate-item-in: slide-in 450ms ease both;
+  --animate-pop: pop 340ms var(--ease-pop) both;
+  --animate-bounce-in: bounce-in 500ms 100ms ease both;
+  --animate-shimmer: shimmer 1.3s linear infinite;
+  --animate-pulse-dot: pulse-dot 1.6s ease-out infinite;
+  --animate-grow-y: grow-y 850ms ease both;
+  --animate-grow-x: grow-x 900ms ease both;
+  --animate-land: land 600ms ease both;
+  --animate-confetti: confetti 1.4s ease-in both;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes modal {
+    from {
+      opacity: 0;
+      transform: translateY(10px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes slide-in {
+    from {
+      opacity: 0;
+      transform: translateX(22px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes pop {
+    from {
+      opacity: 0;
+      transform: translate(-50%, 12px) scale(0.94);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, 0) scale(1);
+    }
+  }
+  @keyframes bounce-in {
+    0% {
+      transform: scale(0.3);
+    }
+    60% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  @keyframes shimmer {
+    from {
+      background-position: -400px 0;
+    }
+    to {
+      background-position: 400px 0;
+    }
+  }
+  @keyframes pulse-dot {
+    0% {
+      box-shadow: 0 0 0 0 rgba(0, 186, 179, 0.5);
+    }
+    100% {
+      box-shadow: 0 0 0 9px rgba(0, 186, 179, 0);
+    }
+  }
+  @keyframes grow-y {
+    from {
+      transform: scaleY(0);
+    }
+    to {
+      transform: scaleY(1);
+    }
+  }
+  @keyframes grow-x {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+  @keyframes land {
+    0% {
+      transform: translateY(-10px) scale(0.94);
+      box-shadow: 0 0 0 0 rgba(0, 186, 179, 0.6);
+    }
+    60% {
+      transform: scale(1.03);
+    }
+    100% {
+      transform: none;
+      box-shadow: 0 0 0 8px rgba(0, 186, 179, 0);
+    }
+  }
+  @keyframes confetti {
+    0% {
+      opacity: 1;
+      transform: translateY(-20px) rotate(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(170px) rotate(600deg);
+    }
+  }
+}
+
+/* ---------- 4. Base ---------- */
+@layer base {
+  html,
+  body {
+    background: var(--bg);
+    color: var(--ink);
+  }
+  body {
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    -webkit-font-smoothing: antialiased;
+  }
+  a {
+    color: var(--teal-deep);
+  }
+  a:hover {
+    color: var(--teal-hover);
+  }
+  ::selection {
+    background: var(--teal);
+    color: var(--navy);
+  }
+  :focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+  }
+}
+
+/* Small mono uppercase label used across the prototype */
+@utility label-mono {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: var(--text-label);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Department colour: style={{ '--hue': dept.hue }} then bg-dept / text-dept */
+@utility bg-dept {
+  background-color: oklch(0.6 0.11 var(--hue));
+}
+@utility text-dept {
+  color: oklch(0.6 0.11 var(--hue));
+}
+@utility border-dept {
+  border-color: oklch(0.6 0.11 var(--hue));
+}
+
+/* Skeleton loader */
+@utility skeleton {
+  background: linear-gradient(90deg, var(--line-3) 25%, var(--hover) 50%, var(--line-3) 75%);
+  background-size: 800px 100%;
+  animation: var(--animate-shimmer);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  body * {
+    visibility: hidden !important;
+  }
+  #print-sheet,
+  #print-sheet * {
+    visibility: visible !important;
+  }
+  #print-sheet {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100% !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+}

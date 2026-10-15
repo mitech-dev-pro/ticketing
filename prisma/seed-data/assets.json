@@ -1,0 +1,92 @@
+[
+  {
+    "code": "MLA-LT-0142",
+    "type": "Laptop",
+    "model": "Dell Latitude 5440",
+    "ownerDepartment": "it",
+    "holderEmail": "kofi.boateng@milife.test",
+    "location": "Achimota HQ",
+    "status": "In use",
+    "warranty": "Mar 2027"
+  },
+  {
+    "code": "MLA-LT-0157",
+    "type": "Laptop",
+    "model": "HP EliteBook 840",
+    "ownerDepartment": "it",
+    "holderEmail": "esi.quaye@milife.test",
+    "location": "Achimota HQ",
+    "status": "In use",
+    "warranty": "Jan 2027"
+  },
+  {
+    "code": "MLA-LT-0163",
+    "type": "Laptop",
+    "model": "Dell Latitude 5440",
+    "ownerDepartment": "it",
+    "holderEmail": "ama.owusu@milife.test",
+    "location": "Kumasi branch",
+    "status": "In use",
+    "warranty": "Mar 2027"
+  },
+  {
+    "code": "MLA-NW-0007",
+    "type": "Router",
+    "model": "Cisco ISR 1100",
+    "ownerDepartment": "it",
+    "holderEmail": null,
+    "location": "Kumasi branch · comms room",
+    "status": "Faulty",
+    "warranty": "Aug 2027"
+  },
+  {
+    "code": "MLA-PH-0100",
+    "type": "Phone system",
+    "model": "Avaya IP Office",
+    "ownerDepartment": "it",
+    "holderEmail": null,
+    "location": "Achimota HQ · call centre",
+    "status": "In use",
+    "warranty": "Support to Dec 2027"
+  },
+  {
+    "code": "MLA-PR-0031",
+    "type": "Printer",
+    "model": "Canon imageRUNNER C3226",
+    "ownerDepartment": "facilities",
+    "holderEmail": null,
+    "location": "Achimota HQ · 2nd floor",
+    "status": "Faulty",
+    "warranty": "Leased · Canon Ghana"
+  },
+  {
+    "code": "MLA-PR-0044",
+    "type": "Printer",
+    "model": "HP LaserJet M507",
+    "ownerDepartment": "facilities",
+    "holderEmail": null,
+    "location": "Kumasi branch",
+    "status": "In use",
+    "warranty": "Leased"
+  },
+  {
+    "code": "MLA-GN-0002",
+    "type": "Generator",
+    "model": "Perkins 100 kVA",
+    "ownerDepartment": "facilities",
+    "holderEmail": null,
+    "location": "Achimota HQ · server room",
+    "status": "Under repair",
+    "warranty": "Service due Nov 2026"
+  },
+  {
+    "code": "MLA-AC-0012",
+    "type": "Air conditioner",
+    "model": "LG 2.5HP split",
+    "ownerDepartment": "facilities",
+    "holderEmail": null,
+    "location": "Kumasi branch · front office",
+    "status": "In use",
+    "warranty": "Jun 2027"
+  }
+]

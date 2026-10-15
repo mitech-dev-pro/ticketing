@@ -1,0 +1,56 @@
+{
+  "sla.targets": {
+    "URGENT": {
+      "firstResponseMinutes": 30,
+      "resolveMinutes": 240
+    },
+    "HIGH": {
+      "firstResponseMinutes": 60,
+      "resolveMinutes": 480
+    },
+    "MEDIUM": {
+      "firstResponseMinutes": 240,
+      "resolveMinutes": 1440
+    },
+    "LOW": {
+      "firstResponseMinutes": 480,
+      "resolveMinutes": 4320
+    }
+  },
+  "sla.calendar": {
+    "URGENT": "24x7",
+    "HIGH": "24x7",
+    "MEDIUM": "24x7",
+    "LOW": "24x7"
+  },
+  "sla.businessHours": {
+    "timezone": "Africa/Accra",
+    "days": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "start": "08:00",
+    "end": "17:00"
+  },
+  "sla.warningPercent": 75,
+  "sla.pauseWhileAwaitingRequester": true,
+  "escalation.level2AfterMinutes": "RESOLVE_TARGET",
+  "rules.autoCloseResolvedAfterDays": 3,
+  "rules.autoCloseEnabled": true,
+  "rules.mentionedDepartmentsCanReply": true,
+  "rules.reasonRequiredWhenForwarding": true,
+  "rules.notifyRequesterOnForward": true,
+  "rules.headReviewAfterForwards": 3,
+  "confidentiality.defaultDepartments": [
+    "hr",
+    "legal",
+    "compliance"
+  ],
+  "retention.closedTicketsArchiveMonths": 12,
+  "retention.confidentialDeleteYears": 7,
+  "retention.attachmentsDeleteMonths": 24,
+  "digest.sendAtLocalTime": "07:30"
+}
