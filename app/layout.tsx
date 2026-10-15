@@ -20,7 +20,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: 'miLife Service Desk',
-  description: 'Internal ticketing for miLife Insurance (Ghana)',
+  description: 'Internal ticketing for miLife Insurance',
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

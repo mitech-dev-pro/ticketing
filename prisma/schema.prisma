@@ -1,6 +1,6 @@
 // miLife Service Desk — data model.
-// Phase 0: no models yet. Phase 1 adds User, Session, AuthToken, Department,
-// ServiceType, Holiday, Setting (see BUILD_PLAN.md).
+// Phase 1 adds User, Session, AuthToken, Department, ServiceType, Holiday, Setting.
+// Phase 2 adds Ticket, TicketLeg, TicketEvent (see BUILD_PLAN.md).
 
 generator client {
   provider = "prisma-client"
@@ -9,4 +9,114 @@ generator client {
 
 datasource db {
   provider = "mysql"
+}
+
+enum Role {
+  MEMBER
+  HEAD
+  ADMIN
+}
+
+enum Branch {
+  ACHIMOTA_HQ
+  KUMASI
+  TAKORADI
+}
+
+enum Priority {
+  URGENT
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum AuthTokenType {
+  INVITE
+  RESET
+}
+
+model Department {
+  id                    String        @id @default(cuid())
+  slug                  String        @unique
+  name                  String
+  hue                   Int
+  emailAlias            String        @unique
+  confidentialByDefault Boolean       @default(false)
+  headUserId            String?       @unique
+  head                  User?         @relation("DepartmentHead", fields: [headUserId], references: [id])
+  members               User[]        @relation("DepartmentMembers")
+  serviceTypes          ServiceType[]
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+}
+
+model User {
+  id                String      @id @default(cuid())
+  name              String
+  email             String      @unique
+  passwordHash      String
+  role              Role
+  departmentId      String
+  department        Department  @relation("DepartmentMembers", fields: [departmentId], references: [id])
+  branch            Branch
+  active            Boolean     @default(true)
+  failedLoginCount  Int         @default(0)
+  lockedUntil       DateTime?
+  phone             String?
+  ext               String?
+  signature         String?     @db.Text
+  theme             String?
+  density           String?
+  notificationPrefs Json?
+  headOfDepartment  Department? @relation("DepartmentHead")
+  sessions          Session[]
+  authTokens        AuthToken[]
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model AuthToken {
+  id        String        @id @default(cuid())
+  tokenHash String        @unique
+  userId    String
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      AuthTokenType
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime      @default(now())
+}
+
+model ServiceType {
+  id                 String     @id @default(cuid())
+  departmentId       String
+  department         Department @relation(fields: [departmentId], references: [id])
+  name               String
+  description        String     @db.Text
+  defaultPriority    Priority
+  needsApproval      Boolean    @default(false)
+  attachmentRequired Boolean    @default(false)
+  fields             Json
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+}
+
+model Holiday {
+  id   String   @id @default(cuid())
+  date DateTime @unique @db.Date
+  name String
+}
+
+model Setting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value Json
 }

@@ -9,8 +9,18 @@ CREATE DATABASE IF NOT EXISTS milife_dev
 CREATE DATABASE IF NOT EXISTS milife_test
   CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- A dedicated app user, scoped to milife_* databases only (covers the shadow
--- database Prisma Migrate creates and drops automatically during `migrate dev`).
+-- Prisma Migrate's shadow database gets wiped and recreated on every `migrate dev`
+-- run. It normally picks a random name (prisma_migrate_shadow_db_<uuid>), which
+-- would NOT match the milife_* grant below, so we pin a fixed name instead via
+-- SHADOW_DATABASE_URL in .env / .env.test.
+CREATE DATABASE IF NOT EXISTS milife_shadow
+  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE DATABASE IF NOT EXISTS milife_test_shadow
+  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- A dedicated app user, scoped to milife_* databases only (this wildcard matches
+-- milife_dev, milife_test, milife_shadow and milife_test_shadow).
 CREATE USER IF NOT EXISTS 'milife_app'@'localhost' IDENTIFIED BY 'nFlvZhmcSqmvG_wE';
 GRANT ALL PRIVILEGES ON `milife\_%`.* TO 'milife_app'@'localhost';
 FLUSH PRIVILEGES;

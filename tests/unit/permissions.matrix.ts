@@ -16,25 +16,9 @@
  *       and search: the per-item check and the query clause cannot disagree.
  */
 
-export type Action =
-  | 'view'
-  | 'reply' // public message to the requester
-  | 'addNote' // internal note
-  | 'readNotes'
-  | 'assign' // assign or reassign to anyone in the department
-  | 'pickUp' // assign an unassigned ticket to yourself
-  | 'setPriority'
-  | 'setStatus'
-  | 'forward'
-  | 'resolve'
-  | 'merge'
-  | 'escalate' // manual escalation to the next level
-  | 'acknowledgeL1'
-  | 'acknowledgeL2'
-  | 'setConfidential' // turn confidentiality on or off
-  | 'rate'
-  | 'reopen'
-  | 'bulk';
+import type { Action } from '@/lib/permissions';
+
+export type { Action };
 
 export interface Case {
   who: string; // seed email (local part only, @milife.test is implied)
