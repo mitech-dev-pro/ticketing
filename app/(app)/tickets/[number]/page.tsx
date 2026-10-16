@@ -11,6 +11,7 @@ import { Conversation } from '@/components/tickets/conversation';
 import { Composer } from '@/components/tickets/composer';
 import { ActionsPanel } from '@/components/tickets/actions-panel';
 import { LowRatingFollowUpBanner, RatingBanner } from '@/components/tickets/rating';
+import { TicketPoller } from '@/components/tickets/ticket-poller';
 import type {
   ConversationEvent,
   JourneyLeg,
@@ -217,6 +218,7 @@ export default async function TicketPage({ params }: TicketPageProps) {
 
   return (
     <div className="flex flex-col gap-5 lg:flex-row lg:items-start">
+      <TicketPoller />
       <div className="flex min-w-0 flex-1 flex-col gap-5">
         <TicketHeader ticket={detail} />
 

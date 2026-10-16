@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { TZDate } from '@date-fns/tz';
-import { FileText, Image as ImageIcon } from 'lucide-react';
+import { FileText } from 'lucide-react';
 import { formatTicketId } from '@/lib/ids';
 import { cn } from '@/lib/utils';
 import type { ConversationEvent } from './types';
@@ -54,19 +54,36 @@ function systemEventText(event: ConversationEvent): string {
 
 function AttachmentCard({ attachment }: { attachment: ConversationEvent['attachments'][number] }) {
   const isImage = attachment.mimeType.startsWith('image/');
+  const href = `/api/attachments/${attachment.id}`;
+
+  // README: "attachments as cards (image thumbnail 112px or file icon)". PDFs preview
+  // natively when opened in the new tab — the download route serves them with
+  // Content-Disposition: inline (lib/storage.ts), so no separate embed is needed.
+  if (isImage) {
+    return (
+      <a
+        key={attachment.id}
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block overflow-hidden rounded-control border border-line"
+        title={attachment.filename}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element -- same-origin API route, not a static asset */}
+        <img src={href} alt={attachment.filename} className="h-[112px] w-[112px] object-cover" />
+      </a>
+    );
+  }
+
   return (
     <a
       key={attachment.id}
-      href={`/api/attachments/${attachment.id}`}
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
       className="flex items-center gap-2 rounded-control border border-line bg-surface px-2.5 py-2 text-small text-ink-2 hover:bg-hover"
     >
-      {isImage ? (
-        <ImageIcon size={16} className="text-muted" />
-      ) : (
-        <FileText size={16} className="text-muted" />
-      )}
+      <FileText size={16} className="text-muted" />
       <span className="truncate">{attachment.filename}</span>
     </a>
   );
