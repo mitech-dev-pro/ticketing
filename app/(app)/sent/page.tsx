@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getSession } from '@/lib/auth';
 import { prisma } from '@/lib/db';
@@ -66,10 +67,12 @@ export default async function SentPage() {
                     className="border-b border-line-2 last:border-0 hover:bg-hover"
                   >
                     <td className="px-3 py-2.5 align-top">
-                      <div className="font-mono text-label text-muted">
-                        {formatTicketId(ticket.number)}
-                      </div>
-                      <div className="font-medium text-ink">{ticket.subject}</div>
+                      <Link href={`/tickets/${ticket.number}`} className="block hover:underline">
+                        <div className="font-mono text-label text-muted">
+                          {formatTicketId(ticket.number)}
+                        </div>
+                        <div className="font-medium text-ink">{ticket.subject}</div>
+                      </Link>
                     </td>
                     <td className="px-3 py-2.5 align-top">
                       <PriorityBadge priority={ticket.priority} />

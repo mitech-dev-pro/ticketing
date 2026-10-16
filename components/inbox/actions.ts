@@ -2,13 +2,13 @@
 
 import { revalidatePath } from 'next/cache';
 import { getSession } from '@/lib/auth';
-import { can, type PermissionTicket } from '@/lib/permissions';
-import { prisma } from '@/lib/db';
+import { can } from '@/lib/permissions';
 import {
   assign as assignService,
   pickUp as pickUpService,
   setPriority as setPriorityService,
   setStatus as setStatusService,
+  loadPermissionTicket,
   InvalidAssigneeError,
   TicketAlreadyAssignedError,
 } from '@/lib/services/tickets';
@@ -23,36 +23,6 @@ import {
 } from '@/lib/validation/tickets';
 
 const FORBIDDEN = "You don't have permission to do that.";
-
-async function loadPermissionTicket(ticketNumber: number): Promise<PermissionTicket | null> {
-  const ticket = await prisma.ticket.findUnique({
-    where: { number: ticketNumber },
-    select: {
-      requesterId: true,
-      requesterDepartmentId: true,
-      assigneeId: true,
-      confidential: true,
-      status: true,
-      legs: { select: { departmentId: true, outAt: true } },
-      mentions: { select: { type: true, userId: true, departmentId: true } },
-    },
-  });
-  if (!ticket) return null;
-
-  return {
-    id: String(ticketNumber),
-    requesterId: ticket.requesterId,
-    requesterDepartmentId: ticket.requesterDepartmentId,
-    assigneeId: ticket.assigneeId,
-    confidential: ticket.confidential,
-    status: ticket.status,
-    legs: ticket.legs,
-    mentions: ticket.mentions.map((mention) => ({
-      type: mention.type === 'PERSON' ? ('person' as const) : ('department' as const),
-      id: (mention.type === 'PERSON' ? mention.userId : mention.departmentId) ?? '',
-    })),
-  };
-}
 
 export async function assignTicket(input: unknown): Promise<ActionResult<null>> {
   const session = await getSession();

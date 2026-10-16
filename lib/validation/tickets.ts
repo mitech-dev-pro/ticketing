@@ -50,3 +50,60 @@ export const bulkResolveTicketsSchema = z.object({
   ticketNumbers: z.array(ticketNumber).min(1),
 });
 export type BulkResolveTicketsInput = z.infer<typeof bulkResolveTicketsSchema>;
+
+// ---------------------------------------------------------------------------------
+// Phase 3: conversation, forwarding, resolve/reopen, rating.
+// ---------------------------------------------------------------------------------
+
+const mentionsSchema = z.object({
+  people: z.array(z.string().min(1)).max(50),
+  departments: z.array(z.string().min(1)).max(50),
+});
+
+const attachmentSchema = z.object({
+  filename: z.string().min(1).max(255),
+  mimeType: z.string().min(1),
+  sizeBytes: z.number().int().positive(),
+  storageKey: z.string().min(1),
+});
+
+export const replyTicketSchema = z.object({
+  ticketNumber,
+  body: z.string().trim().min(1, 'Write a reply before sending').max(10_000),
+  mentions: mentionsSchema,
+  attachments: z.array(attachmentSchema).max(10),
+});
+export type ReplyTicketInput = z.infer<typeof replyTicketSchema>;
+
+export const addNoteTicketSchema = z.object({
+  ticketNumber,
+  body: z.string().trim().min(1, 'Write a note before sending').max(10_000),
+  mentions: mentionsSchema,
+  attachments: z.array(attachmentSchema).max(10),
+});
+export type AddNoteTicketInput = z.infer<typeof addNoteTicketSchema>;
+
+export const forwardTicketSchema = z.object({
+  ticketNumber,
+  targetDepartmentId: z.string().min(1, 'Choose a department'),
+  reason: z.string().trim().min(1, 'A reason is required to forward a ticket').max(2_000),
+  confidential: z.boolean(),
+});
+export type ForwardTicketInput = z.infer<typeof forwardTicketSchema>;
+
+export const resolveTicketSchema = z.object({ ticketNumber });
+export type ResolveTicketInput = z.infer<typeof resolveTicketSchema>;
+
+export const reopenTicketSchema = z.object({ ticketNumber });
+export type ReopenTicketInput = z.infer<typeof reopenTicketSchema>;
+
+export const rateTicketSchema = z.object({
+  ticketNumber,
+  stars: z.number().int().min(1).max(5),
+  reasons: z.array(z.string().min(1)).max(10).default([]),
+  note: z.string().trim().max(1_000).nullable().default(null),
+});
+export type RateTicketInput = z.infer<typeof rateTicketSchema>;
+
+export const markRatingFollowedUpSchema = z.object({ ticketNumber });
+export type MarkRatingFollowedUpInput = z.infer<typeof markRatingFollowedUpSchema>;

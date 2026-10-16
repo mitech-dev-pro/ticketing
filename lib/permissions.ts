@@ -26,6 +26,7 @@ export type Action =
   | 'setConfidential' // turn confidentiality on or off
   | 'rate'
   | 'reopen'
+  | 'markRatingFollowedUp' // head/admin dismisses the low-rating follow-up banner
   | 'bulk';
 
 export type Role = 'MEMBER' | 'HEAD' | 'ADMIN';
@@ -183,6 +184,7 @@ export function can(
     case 'assign':
     case 'bulk':
     case 'setConfidential':
+    case 'markRatingFollowedUp':
       return isHeadOfCurrentDepartment || isAdmin;
 
     case 'pickUp':

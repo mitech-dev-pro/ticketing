@@ -30,6 +30,9 @@ blob-report
 *.log
 npm-debug.log*
 
+# local attachment storage (lib/storage.ts fallback without BLOB_READ_WRITE_TOKEN)
+.uploads
+
 # misc
 .DS_Store
 *.pem

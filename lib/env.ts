@@ -14,6 +14,8 @@ const envSchema = z.object({
   APP_URL: z.string().min(1, 'APP_URL is required').url('APP_URL must be a full URL'),
   // Unset in development: lib/email.ts logs to the console instead of calling Resend.
   RESEND_API_KEY: z.string().optional(),
+  // Unset in development: lib/storage.ts writes to .uploads/ on disk instead of Blob.
+  BLOB_READ_WRITE_TOKEN: z.string().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -23,4 +25,5 @@ export const env: Env = envSchema.parse({
   DATABASE_URL: process.env.DATABASE_URL,
   APP_URL: process.env.APP_URL,
   RESEND_API_KEY: process.env.RESEND_API_KEY,
+  BLOB_READ_WRITE_TOKEN: process.env.BLOB_READ_WRITE_TOKEN,
 });

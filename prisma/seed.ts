@@ -29,6 +29,7 @@ import peopleData from './seed-data/people.json';
 import serviceTypesData from './seed-data/service-types.json';
 import settingsData from './seed-data/settings.json';
 import ticketsData from './seed-data/tickets.json';
+import cannedRepliesData from './seed-data/canned-replies.json';
 
 interface SeedDepartment {
   slug: string;
@@ -62,6 +63,12 @@ interface SeedServiceType {
   needsApproval: boolean;
   attachmentRequired: boolean;
   fields: SeedServiceTypeField[];
+}
+
+interface SeedCannedReply {
+  department: string | null;
+  title: string;
+  body: string;
 }
 
 interface SeedTicketLeg {
@@ -213,6 +220,32 @@ async function main() {
       ? await prisma.serviceType.update({ where: { id: existing.id }, data })
       : await prisma.serviceType.create({ data });
     serviceTypeIdByKey.set(`${serviceType.department}::${serviceType.name}`, record.id);
+  }
+
+  const cannedReplies = cannedRepliesData as SeedCannedReply[];
+  for (const cannedReply of cannedReplies) {
+    const departmentId = cannedReply.department
+      ? (departmentIdBySlug.get(cannedReply.department) ?? null)
+      : null;
+    if (cannedReply.department && !departmentId) {
+      throw new Error(
+        `Canned reply "${cannedReply.title}" references unknown department "${cannedReply.department}"`,
+      );
+    }
+    const existing = await prisma.cannedReply.findFirst({
+      where: { departmentId, title: cannedReply.title },
+      select: { id: true },
+    });
+    if (existing) {
+      await prisma.cannedReply.update({
+        where: { id: existing.id },
+        data: { body: cannedReply.body },
+      });
+    } else {
+      await prisma.cannedReply.create({
+        data: { departmentId, title: cannedReply.title, body: cannedReply.body },
+      });
+    }
   }
 
   for (const [key, value] of Object.entries(settings)) {
@@ -413,7 +446,7 @@ async function main() {
   }
 
   console.log(
-    `Seeded ${departments.length} departments, ${people.length} people, ${serviceTypes.length} service types, ${Object.keys(settings).length} settings, ${tickets.length} tickets, ${legCount} legs, ${eventCount} events, ${mentionCount} mentions.`,
+    `Seeded ${departments.length} departments, ${people.length} people, ${serviceTypes.length} service types, ${cannedReplies.length} canned replies, ${Object.keys(settings).length} settings, ${tickets.length} tickets, ${legCount} legs, ${eventCount} events, ${mentionCount} mentions.`,
   );
 }
 

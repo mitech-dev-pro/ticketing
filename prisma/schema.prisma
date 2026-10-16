@@ -50,9 +50,9 @@ enum Channel {
 }
 
 // MESSAGE/NOTE/ASSIGNED/FORWARDED/PRIORITY_CHANGED/STATUS_CHANGED/RESOLVED/
-// CONFIDENTIAL_CHANGED are written by Phase 2 services. ESCALATED, RATED,
-// BLOCKED_BY, BLOCKS, RELATED_TO only appear in seeded history until their
-// owning phase (escalation/rating/merge) implements the behaviour.
+// CONFIDENTIAL_CHANGED/REOPENED/RATED/RATING_FOLLOWED_UP are written by Phase 2/3
+// services. ESCALATED, BLOCKED_BY, BLOCKS, RELATED_TO only appear in seeded history
+// until their owning phase (escalation/merge) implements the behaviour.
 enum TicketEventType {
   CREATED
   MESSAGE
@@ -63,8 +63,10 @@ enum TicketEventType {
   STATUS_CHANGED
   RESOLVED
   CONFIDENTIAL_CHANGED
+  REOPENED
   ESCALATED
   RATED
+  RATING_FOLLOWED_UP
   BLOCKED_BY
   BLOCKS
   RELATED_TO
@@ -76,51 +78,53 @@ enum MentionType {
 }
 
 model Department {
-  id                    String        @id @default(cuid())
-  slug                  String        @unique
+  id                    String          @id @default(cuid())
+  slug                  String          @unique
   name                  String
   hue                   Int
-  emailAlias            String        @unique
-  confidentialByDefault Boolean       @default(false)
-  headUserId            String?       @unique
-  head                  User?         @relation("DepartmentHead", fields: [headUserId], references: [id])
-  members               User[]        @relation("DepartmentMembers")
+  emailAlias            String          @unique
+  confidentialByDefault Boolean         @default(false)
+  headUserId            String?         @unique
+  head                  User?           @relation("DepartmentHead", fields: [headUserId], references: [id])
+  members               User[]          @relation("DepartmentMembers")
   serviceTypes          ServiceType[]
-  ticketsRequested      Ticket[]      @relation("TicketRequesterDepartment")
+  ticketsRequested      Ticket[]        @relation("TicketRequesterDepartment")
   ticketLegs            TicketLeg[]
   ticketMentions        TicketMention[] @relation("TicketMentionDepartment")
-  createdAt             DateTime      @default(now())
-  updatedAt             DateTime      @updatedAt
+  cannedReplies         CannedReply[]
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
 }
 
 model User {
-  id                String      @id @default(cuid())
-  name              String
-  email             String      @unique
-  passwordHash      String
-  role              Role
-  departmentId      String
-  department        Department  @relation("DepartmentMembers", fields: [departmentId], references: [id])
-  branch            Branch
-  active            Boolean     @default(true)
-  failedLoginCount  Int         @default(0)
-  lockedUntil       DateTime?
-  phone             String?
-  ext               String?
-  signature         String?     @db.Text
-  theme             String?
-  density           String?
-  notificationPrefs Json?
-  headOfDepartment  Department? @relation("DepartmentHead")
-  sessions          Session[]
-  authTokens        AuthToken[]
-  ticketsRequested  Ticket[]        @relation("TicketRequester")
-  ticketsAssigned   Ticket[]        @relation("TicketAssignee")
-  ticketLegs        TicketLeg[]     @relation("TicketLegBy")
-  ticketEvents      TicketEvent[]   @relation("TicketEventBy")
-  ticketMentions    TicketMention[] @relation("TicketMentionUser")
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
+  id                  String          @id @default(cuid())
+  name                String
+  email               String          @unique
+  passwordHash        String
+  role                Role
+  departmentId        String
+  department          Department      @relation("DepartmentMembers", fields: [departmentId], references: [id])
+  branch              Branch
+  active              Boolean         @default(true)
+  failedLoginCount    Int             @default(0)
+  lockedUntil         DateTime?
+  phone               String?
+  ext                 String?
+  signature           String?         @db.Text
+  theme               String?
+  density             String?
+  notificationPrefs   Json?
+  headOfDepartment    Department?     @relation("DepartmentHead")
+  sessions            Session[]
+  authTokens          AuthToken[]
+  ticketsRequested    Ticket[]        @relation("TicketRequester")
+  ticketsAssigned     Ticket[]        @relation("TicketAssignee")
+  ticketLegs          TicketLeg[]     @relation("TicketLegBy")
+  ticketEvents        TicketEvent[]   @relation("TicketEventBy")
+  ticketMentions      TicketMention[] @relation("TicketMentionUser")
+  attachmentsUploaded Attachment[]    @relation("AttachmentUploadedBy")
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
 }
 
 model Session {
@@ -174,34 +178,39 @@ model Setting {
 // `ALTER TABLE Ticket AUTO_INCREMENT = 24827;`, added by hand since Prisma cannot
 // express a start value. Seed tickets keep their prototype numbers (24788–24826).
 model Ticket {
-  number                Int           @id @default(autoincrement())
+  number                Int             @id @default(autoincrement())
   subject               String
-  description           String        @db.Text
+  description           String          @db.Text
   fields                Json
   requesterId           String
-  requester             User          @relation("TicketRequester", fields: [requesterId], references: [id])
+  requester             User            @relation("TicketRequester", fields: [requesterId], references: [id])
   requesterDepartmentId String
-  requesterDepartment   Department    @relation("TicketRequesterDepartment", fields: [requesterDepartmentId], references: [id])
+  requesterDepartment   Department      @relation("TicketRequesterDepartment", fields: [requesterDepartmentId], references: [id])
   serviceTypeId         String
-  serviceType           ServiceType   @relation(fields: [serviceTypeId], references: [id])
+  serviceType           ServiceType     @relation(fields: [serviceTypeId], references: [id])
   assigneeId            String?
-  assignee              User?         @relation("TicketAssignee", fields: [assigneeId], references: [id])
+  assignee              User?           @relation("TicketAssignee", fields: [assigneeId], references: [id])
   priority              Priority
-  status                TicketStatus  @default(OPEN)
-  channel               Channel       @default(PORTAL)
-  confidential          Boolean       @default(false)
+  status                TicketStatus    @default(OPEN)
+  channel               Channel         @default(PORTAL)
+  confidential          Boolean         @default(false)
   // D-02/D-03: createdAt + target + pausedMs on the ticket's calendar.
   dueAt                 DateTime
   firstResponseDueAt    DateTime
   firstResponseAt       DateTime?
   resolvedAt            DateTime?
   pausedAt              DateTime?
-  pausedMs              Int           @default(0)
+  pausedMs              Int             @default(0)
+  // Set by rate() (requester, 1-5 stars) once resolved; ratingFollowedUpAt is set by
+  // markRatingFollowedUp() (head/admin) dismissing the low-rating banner for a 1-2 star csat.
+  csat                  Int?
+  ratingFollowedUpAt    DateTime?
   legs                  TicketLeg[]
   events                TicketEvent[]
   mentions              TicketMention[]
-  createdAt             DateTime      @default(now())
-  updatedAt             DateTime      @updatedAt
+  attachments           Attachment[]
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
 
   @@index([status])
   @@index([priority])
@@ -232,15 +241,16 @@ model TicketLeg {
 // Append-only (CLAUDE.md): every ticket change writes one of these in the same
 // transaction. Never updated or deleted.
 model TicketEvent {
-  id        String          @id @default(cuid())
-  ticketId  Int
-  ticket    Ticket          @relation(fields: [ticketId], references: [number], onDelete: Cascade)
-  type      TicketEventType
-  byUserId  String?
-  by        User?           @relation("TicketEventBy", fields: [byUserId], references: [id])
-  body      String?         @db.Text
-  meta      Json?
-  createdAt DateTime        @default(now())
+  id          String          @id @default(cuid())
+  ticketId    Int
+  ticket      Ticket          @relation(fields: [ticketId], references: [number], onDelete: Cascade)
+  type        TicketEventType
+  byUserId    String?
+  by          User?           @relation("TicketEventBy", fields: [byUserId], references: [id])
+  body        String?         @db.Text
+  meta        Json?
+  createdAt   DateTime        @default(now())
+  attachments Attachment[]
 
   @@index([ticketId, createdAt])
 }
@@ -263,4 +273,41 @@ model TicketMention {
   @@index([ticketId])
   @@index([userId])
   @@index([departmentId])
+}
+
+// Files on a reply or note (Phase 3). Denormalizes ticketId alongside the owning
+// eventId so a visibility check can filter on the ticket without joining through
+// TicketEvent; lib/storage.ts resolves storageKey to actual bytes (Vercel Blob or,
+// in local dev without a token, the filesystem).
+model Attachment {
+  id           String      @id @default(cuid())
+  ticketId     Int
+  ticket       Ticket      @relation(fields: [ticketId], references: [number], onDelete: Cascade)
+  eventId      String
+  event        TicketEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  uploadedById String
+  uploadedBy   User        @relation("AttachmentUploadedBy", fields: [uploadedById], references: [id])
+  filename     String
+  mimeType     String
+  sizeBytes    Int
+  storageKey   String
+  createdAt    DateTime    @default(now())
+
+  @@index([ticketId])
+  @@index([eventId])
+}
+
+// Department-scoped composer shortcuts (D-13: seeded from the prototype's CANNED
+// data via prisma/seed-data/canned-replies.json). departmentId null means a global
+// reply offered in every department's composer. Admin CRUD for these is Phase 8
+// scope; Phase 3 only reads them into the composer.
+model CannedReply {
+  id           String      @id @default(cuid())
+  departmentId String?
+  department   Department? @relation(fields: [departmentId], references: [id])
+  title        String
+  body         String      @db.Text
+  createdAt    DateTime    @default(now())
+
+  @@unique([departmentId, title])
 }
