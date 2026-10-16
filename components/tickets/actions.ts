@@ -18,6 +18,7 @@ import {
   UnknownMentionError,
   type AttachmentInput,
 } from '@/lib/services/tickets';
+import { AlreadyEscalatedError, escalate as escalateService } from '@/lib/services/escalations';
 import {
   MAX_ATTACHMENT_BYTES,
   ALLOWED_ATTACHMENT_MIME_TYPES,
@@ -26,6 +27,7 @@ import {
 import { formError, type ActionResult } from '@/lib/validation/action-result';
 import {
   addNoteTicketSchema,
+  escalateTicketSchema,
   forwardTicketSchema,
   markRatingFollowedUpSchema,
   rateTicketSchema,
@@ -209,6 +211,43 @@ export async function markTicketRatingFollowedUp(input: unknown): Promise<Action
   });
 
   revalidatePath(ticketPath(parsed.data.ticketNumber));
+  return { ok: true, data: null };
+}
+
+/** D-15: the requester, or a handler who isn't the head, can escalate an open ticket
+ * to the next level with a reason — "next" meaning one past whatever's already there. */
+export async function escalateTicket(input: unknown): Promise<ActionResult<null>> {
+  const session = await getSession();
+  if (!session) return formError(FORBIDDEN);
+
+  const parsed = escalateTicketSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, fieldErrors: parsed.error.flatten().fieldErrors };
+
+  const ticket = await loadPermissionTicket(parsed.data.ticketNumber);
+  if (!ticket || !can('escalate', session.user, ticket)) return formError(FORBIDDEN);
+
+  const highest = await prisma.escalation.aggregate({
+    where: { ticketId: parsed.data.ticketNumber },
+    _max: { level: true },
+  });
+  const nextLevel = (highest._max.level ?? 0) + 1;
+
+  try {
+    await escalateService({
+      ticketNumber: parsed.data.ticketNumber,
+      level: nextLevel,
+      byUserId: session.user.id,
+      reason: parsed.data.reason,
+    });
+  } catch (error) {
+    if (error instanceof AlreadyEscalatedError) {
+      return formError('This ticket was just escalated by someone else — refresh to see it.');
+    }
+    throw error;
+  }
+
+  revalidatePath(ticketPath(parsed.data.ticketNumber));
+  revalidatePath('/escalations');
   return { ok: true, data: null };
 }
 

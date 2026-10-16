@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "crons": [
+    { "path": "/api/cron/sla-warning", "schedule": "* * * * *" },
+    { "path": "/api/cron/escalate", "schedule": "* * * * *" },
+    { "path": "/api/cron/auto-close", "schedule": "* * * * *" },
+    { "path": "/api/cron/out-of-office", "schedule": "* * * * *" },
+    { "path": "/api/cron/digest", "schedule": "30 7 * * *" }
+  ]
+}

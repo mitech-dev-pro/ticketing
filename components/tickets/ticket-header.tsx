@@ -118,6 +118,11 @@ export function TicketHeader({ ticket }: { ticket: TicketDetail }) {
             {ticket.confidential ? (
               <Badge className="bg-danger-fg/15 text-danger-fg">Confidential</Badge>
             ) : null}
+            {ticket.openEscalationLevel ? (
+              <Badge className="bg-urgent/15 text-urgent">
+                Escalated L{ticket.openEscalationLevel}
+              </Badge>
+            ) : null}
           </div>
           <h1 className="text-title font-bold text-ink">{ticket.subject}</h1>
           <p className="text-small text-muted">

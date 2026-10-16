@@ -16,6 +16,10 @@ const envSchema = z.object({
   RESEND_API_KEY: z.string().optional(),
   // Unset in development: lib/storage.ts writes to .uploads/ on disk instead of Blob.
   BLOB_READ_WRITE_TOKEN: z.string().optional(),
+  // Required: app/api/cron/* routes reject any request whose Authorization header
+  // doesn't match this. Vercel Cron sends it automatically once set in the project;
+  // locally, curl the route with `Authorization: Bearer <CRON_SECRET>`.
+  CRON_SECRET: z.string().min(1, 'CRON_SECRET is required'),
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -26,4 +30,5 @@ export const env: Env = envSchema.parse({
   APP_URL: process.env.APP_URL,
   RESEND_API_KEY: process.env.RESEND_API_KEY,
   BLOB_READ_WRITE_TOKEN: process.env.BLOB_READ_WRITE_TOKEN,
+  CRON_SECRET: process.env.CRON_SECRET,
 });

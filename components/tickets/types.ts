@@ -67,6 +67,7 @@ export interface TicketPermissions {
   reopen: boolean;
   rate: boolean;
   markRatingFollowedUp: boolean;
+  escalate: boolean;
 }
 
 export interface TicketDetail {
@@ -90,4 +91,6 @@ export interface TicketDetail {
   legs: JourneyLeg[];
   deadline: DeadlineDisplay;
   locked: boolean;
+  /** Highest escalation level still unacknowledged, or null if none. */
+  openEscalationLevel: number | null;
 }

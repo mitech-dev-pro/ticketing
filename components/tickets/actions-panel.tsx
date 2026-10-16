@@ -8,6 +8,7 @@ import { Select } from '@/components/ui/select';
 import { useUndoToast } from '@/components/ui/undo-toast';
 import { assignTicket, setTicketPriority } from '@/components/inbox/actions';
 import { resolveTicket } from './actions';
+import { EscalateDialog } from './escalate-dialog';
 import { ForwardDialog } from './forward-dialog';
 import type { DepartmentOption, MemberOption, TicketDetail, TicketPermissions } from './types';
 
@@ -108,6 +109,8 @@ export function ActionsPanel({ ticket, permissions, members, departments }: Acti
               departments={departments}
             />
           ) : null}
+
+          {permissions.escalate ? <EscalateDialog ticketNumber={ticket.number} /> : null}
 
           {permissions.resolve ? (
             <Button

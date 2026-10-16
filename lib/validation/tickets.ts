@@ -107,3 +107,16 @@ export type RateTicketInput = z.infer<typeof rateTicketSchema>;
 
 export const markRatingFollowedUpSchema = z.object({ ticketNumber });
 export type MarkRatingFollowedUpInput = z.infer<typeof markRatingFollowedUpSchema>;
+
+// ---------------------------------------------------------------------------------
+// Phase 4: manual escalation (D-15) and acknowledgement.
+// ---------------------------------------------------------------------------------
+
+export const escalateTicketSchema = z.object({
+  ticketNumber,
+  reason: z.string().trim().min(1, 'A reason is required to escalate a ticket').max(2_000),
+});
+export type EscalateTicketInput = z.infer<typeof escalateTicketSchema>;
+
+export const acknowledgeEscalationSchema = z.object({ escalationId: z.string().min(1) });
+export type AcknowledgeEscalationInput = z.infer<typeof acknowledgeEscalationSchema>;

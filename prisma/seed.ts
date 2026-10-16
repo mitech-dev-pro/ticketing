@@ -262,6 +262,7 @@ async function main() {
   let legCount = 0;
   let eventCount = 0;
   let mentionCount = 0;
+  let escalationCount = 0;
 
   for (const seedTicket of tickets) {
     const requesterId = userIdByEmail.get(seedTicket.requesterEmail);
@@ -384,6 +385,7 @@ async function main() {
 
     await prisma.ticketEvent.deleteMany({ where: { ticketId: seedTicket.number } });
     await prisma.ticketMention.deleteMany({ where: { ticketId: seedTicket.number } });
+    await prisma.escalation.deleteMany({ where: { ticketId: seedTicket.number } });
     for (const event of seedTicket.events) {
       const byUserId = event.byEmail ? userIdByEmail.get(event.byEmail) : null;
       if (event.byEmail && !byUserId) {
@@ -407,6 +409,24 @@ async function main() {
         },
       });
       eventCount++;
+
+      if (event.type === 'ESCALATED') {
+        const escalationMeta = event.meta as { level?: number; manual?: boolean } | undefined;
+        const level = escalationMeta?.level;
+        if (typeof level !== 'number') {
+          throw new Error(`Ticket ${seedTicket.number} has an ESCALATED event with no meta.level`);
+        }
+        await prisma.escalation.create({
+          data: {
+            ticketId: seedTicket.number,
+            level,
+            reason: event.body ?? null,
+            byUserId: escalationMeta?.manual ? byUserId : null,
+            at: minutesAgo(event.minutesAgo),
+          },
+        });
+        escalationCount++;
+      }
 
       if (event.mentions) {
         for (const personEmail of event.mentions.people) {
@@ -446,7 +466,7 @@ async function main() {
   }
 
   console.log(
-    `Seeded ${departments.length} departments, ${people.length} people, ${serviceTypes.length} service types, ${cannedReplies.length} canned replies, ${Object.keys(settings).length} settings, ${tickets.length} tickets, ${legCount} legs, ${eventCount} events, ${mentionCount} mentions.`,
+    `Seeded ${departments.length} departments, ${people.length} people, ${serviceTypes.length} service types, ${cannedReplies.length} canned replies, ${Object.keys(settings).length} settings, ${tickets.length} tickets, ${legCount} legs, ${eventCount} events, ${mentionCount} mentions, ${escalationCount} escalations.`,
   );
 }
 

@@ -77,6 +77,15 @@ enum MentionType {
   DEPARTMENT
 }
 
+// Fed by the cron jobs in app/api/cron/* (Phase 4): sla-warning writes SLA_WARNING /
+// FIRST_RESPONSE_MISS, escalate writes ESCALATED_L1 / ESCALATED_L2.
+enum NotificationKind {
+  SLA_WARNING
+  FIRST_RESPONSE_MISS
+  ESCALATED_L1
+  ESCALATED_L2
+}
+
 model Department {
   id                    String          @id @default(cuid())
   slug                  String          @unique
@@ -123,6 +132,11 @@ model User {
   ticketEvents        TicketEvent[]   @relation("TicketEventBy")
   ticketMentions      TicketMention[] @relation("TicketMentionUser")
   attachmentsUploaded Attachment[]    @relation("AttachmentUploadedBy")
+  escalationsRaised   Escalation[]    @relation("EscalationBy")
+  escalationsAcked    Escalation[]    @relation("EscalationAcknowledgedBy")
+  notifications       Notification[]
+  outOfOffice         OutOfOffice[]   @relation("OutOfOfficeUser")
+  outOfOfficeDelegate OutOfOffice[]   @relation("OutOfOfficeDelegate")
   createdAt           DateTime        @default(now())
   updatedAt           DateTime        @updatedAt
 }
@@ -209,6 +223,8 @@ model Ticket {
   events                TicketEvent[]
   mentions              TicketMention[]
   attachments           Attachment[]
+  escalations           Escalation[]
+  notifications         Notification[]
   createdAt             DateTime        @default(now())
   updatedAt             DateTime        @updatedAt
 
@@ -310,4 +326,60 @@ model CannedReply {
   createdAt    DateTime    @default(now())
 
   @@unique([departmentId, title])
+}
+
+// Breach escalations (Phase 4). The unique (ticketId, level) constraint is what keeps
+// the cron job (app/api/cron/escalate) and a human's manual escalate() (D-15) from
+// ever double-escalating the same ticket to the same level. byUserId is set for a
+// manual escalation and null for one the cron raised.
+model Escalation {
+  id               String    @id @default(cuid())
+  ticketId         Int
+  ticket           Ticket    @relation(fields: [ticketId], references: [number], onDelete: Cascade)
+  level            Int
+  reason           String?   @db.Text
+  byUserId         String?
+  by               User?     @relation("EscalationBy", fields: [byUserId], references: [id])
+  at               DateTime  @default(now())
+  acknowledgedAt   DateTime?
+  acknowledgedById String?
+  acknowledgedBy   User?     @relation("EscalationAcknowledgedBy", fields: [acknowledgedById], references: [id])
+
+  @@unique([ticketId, level])
+  @@index([ticketId])
+}
+
+// Feeds the header dropdown and the 07:30 digest (Phase 4). A unique (userId,
+// ticketId, kind) means a cron re-run or a doubled notify can't duplicate the same
+// notification — one SLA_WARNING per user per ticket, ever.
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ticketId  Int
+  ticket    Ticket           @relation(fields: [ticketId], references: [number], onDelete: Cascade)
+  kind      NotificationKind
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  @@unique([userId, ticketId, kind])
+  @@index([userId, readAt])
+  @@index([ticketId])
+}
+
+// The Profile & settings toggle to create these is Phase 7; Phase 4 only needs the
+// model and the cron (app/api/cron/out-of-office) that reassigns the user's open
+// tickets to delegateUserId. Reassignment is naturally idempotent: once a ticket's
+// assigneeId is the delegate, the cron's own WHERE clause no longer matches it.
+model OutOfOffice {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation("OutOfOfficeUser", fields: [userId], references: [id], onDelete: Cascade)
+  delegateUserId String
+  delegate       User     @relation("OutOfOfficeDelegate", fields: [delegateUserId], references: [id])
+  until          DateTime
+  createdAt      DateTime @default(now())
+
+  @@index([userId])
+  @@index([until])
 }

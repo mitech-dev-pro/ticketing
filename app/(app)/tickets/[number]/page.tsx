@@ -90,6 +90,12 @@ export default async function TicketPage({ params }: TicketPageProps) {
         orderBy: { createdAt: 'asc' },
       },
       mentions: { select: { type: true, userId: true, departmentId: true } },
+      escalations: {
+        where: { acknowledgedAt: null },
+        select: { level: true },
+        orderBy: { level: 'desc' },
+        take: 1,
+      },
     },
   });
   if (!ticket) notFound();
@@ -125,6 +131,7 @@ export default async function TicketPage({ params }: TicketPageProps) {
     reopen: can('reopen', user, permissionTicket),
     rate: can('rate', user, permissionTicket),
     markRatingFollowedUp: can('markRatingFollowedUp', user, permissionTicket),
+    escalate: can('escalate', user, permissionTicket),
   };
 
   const currentDeptId = currentDepartmentId(permissionTicket);
@@ -214,6 +221,7 @@ export default async function TicketPage({ params }: TicketPageProps) {
     legs,
     deadline,
     locked,
+    openEscalationLevel: ticket.escalations[0]?.level ?? null,
   };
 
   return (

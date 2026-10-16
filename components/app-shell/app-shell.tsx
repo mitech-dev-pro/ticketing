@@ -6,14 +6,23 @@ import { UndoToastProvider } from '@/components/ui/undo-toast';
 import { Header } from './header';
 import { Sidebar } from './sidebar';
 import type { Role } from '@/lib/permissions';
+import type { NotificationItem } from './notification-types';
 
 interface AppShellProps {
   user: { name: string; role: Role };
+  notifications: NotificationItem[];
+  unreadCount: number;
   newTicketTrigger?: ReactNode;
   children: ReactNode;
 }
 
-export function AppShell({ user, newTicketTrigger, children }: AppShellProps) {
+export function AppShell({
+  user,
+  notifications,
+  unreadCount,
+  newTicketTrigger,
+  children,
+}: AppShellProps) {
   const [navOpen, setNavOpen] = useState(false);
 
   return (
@@ -33,7 +42,12 @@ export function AppShell({ user, newTicketTrigger, children }: AppShellProps) {
           </SheetContent>
 
           <div className="flex min-w-0 flex-1 flex-col bg-bg">
-            <Header name={user.name} role={user.role} />
+            <Header
+              name={user.name}
+              role={user.role}
+              notifications={notifications}
+              unreadCount={unreadCount}
+            />
             <main className="flex-1 px-6 pt-[22px] pb-10">{children}</main>
           </div>
         </Sheet>

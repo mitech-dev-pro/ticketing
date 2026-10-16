@@ -588,3 +588,41 @@ export async function markRatingFollowedUp(params: {
     });
   });
 }
+
+/** app/api/cron/auto-close (Phase 4): closes a resolved ticket nobody rated or
+ * reopened within rules.autoCloseResolvedAfterDays. Finding which tickets qualify is
+ * the cron route's job (it has to check for a REOPENED event); this just does the
+ * write for one ticket, system-triggered so byUserId is null like other cron writes. */
+
+/** Resolved more than `cutoff` ago, never rated (csat) and never reopened (a
+ * REOPENED event). Separated from autoClose() so the selection logic is unit-testable
+ * without a fake NextRequest. */
+export async function findAutoCloseCandidates(cutoff: Date): Promise<number[]> {
+  const tickets = await prisma.ticket.findMany({
+    where: {
+      status: 'RESOLVED',
+      resolvedAt: { lte: cutoff },
+      csat: null,
+      events: { none: { type: 'REOPENED' } },
+    },
+    select: { number: true },
+  });
+  return tickets.map((ticket) => ticket.number);
+}
+
+export async function autoClose(params: { ticketNumber: number }): Promise<void> {
+  await prisma.$transaction(async (tx) => {
+    const ticket = await tx.ticket.findUniqueOrThrow({ where: { number: params.ticketNumber } });
+    if (ticket.status !== 'RESOLVED') return; // already moved on since the cron queried
+
+    await tx.ticket.update({ where: { number: params.ticketNumber }, data: { status: 'CLOSED' } });
+    await tx.ticketEvent.create({
+      data: {
+        ticketId: params.ticketNumber,
+        type: 'STATUS_CHANGED',
+        byUserId: null,
+        meta: { from: 'RESOLVED', to: 'CLOSED', via: 'auto-close' },
+      },
+    });
+  });
+}
