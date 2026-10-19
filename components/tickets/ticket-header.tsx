@@ -123,6 +123,7 @@ export function TicketHeader({ ticket }: { ticket: TicketDetail }) {
                 Escalated L{ticket.openEscalationLevel}
               </Badge>
             ) : null}
+            {ticket.blocked ? <Badge className="bg-high/15 text-high">Blocked</Badge> : null}
           </div>
           <h1 className="text-title font-bold text-ink">{ticket.subject}</h1>
           <p className="text-small text-muted">

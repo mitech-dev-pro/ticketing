@@ -44,8 +44,20 @@ function systemEventText(event: ConversationEvent): string {
       return `${by} marked the low rating followed up`;
     case 'BLOCKED_BY':
     case 'BLOCKS':
-    case 'RELATED_TO':
-      return `${by} linked this ticket`;
+    case 'RELATED_TO': {
+      const action = meta.action === 'removed' ? 'removed a link on' : 'linked';
+      return `${by} ${action} this ticket`;
+    }
+    case 'TASK': {
+      const action = meta.action as string | undefined;
+      const text = meta.text ? ` "${String(meta.text)}"` : '';
+      if (action === 'completed') return `${by} completed a task${text}`;
+      if (action === 'reopened') return `${by} reopened a task${text}`;
+      if (action === 'removed') return `${by} removed a task${text}`;
+      return `${by} added a task${text}`;
+    }
+    case 'TIME':
+      return `${by} logged ${String(meta.minutes)} min`;
     case 'MESSAGE':
     case 'NOTE':
       return '';

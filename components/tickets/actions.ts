@@ -24,6 +24,26 @@ import {
   ALLOWED_ATTACHMENT_MIME_TYPES,
   uploadAttachment as uploadAttachmentToStorage,
 } from '@/lib/storage';
+import {
+  addTask as addTaskService,
+  removeTask as removeTaskService,
+  TaskNotFoundError,
+  toggleTask as toggleTaskService,
+} from '@/lib/services/tasks';
+import {
+  logQuickTime as logQuickTimeService,
+  NoRunningTimerError,
+  startTimer as startTimerService,
+  stopTimer as stopTimerService,
+  TimerAlreadyRunningError,
+} from '@/lib/services/time';
+import {
+  addLink as addLinkService,
+  AlreadyLinkedError,
+  removeLink as removeLinkService,
+  SelfLinkError,
+  TicketNotFoundError as LinkedTicketNotFoundError,
+} from '@/lib/services/links';
 import { formError, type ActionResult } from '@/lib/validation/action-result';
 import {
   addNoteTicketSchema,
@@ -35,6 +55,9 @@ import {
   replyTicketSchema,
   resolveTicketSchema,
 } from '@/lib/validation/tickets';
+import { addTaskSchema, removeTaskSchema, toggleTaskSchema } from '@/lib/validation/tasks';
+import { logQuickTimeSchema, startTimerSchema, stopTimerSchema } from '@/lib/validation/time';
+import { addLinkSchema, removeLinkSchema } from '@/lib/validation/links';
 
 const FORBIDDEN = "You don't have permission to do that.";
 
@@ -342,4 +365,199 @@ export async function mentionCandidatesForTicket(
     prisma.department.findMany({ select: { id: true, name: true }, orderBy: { name: 'asc' } }),
   ]);
   return { ok: true, data: { people, departments } };
+}
+
+// ---------------------------------------------------------------------------------
+// Phase 6: tasks, time tracking, linked tickets.
+// ---------------------------------------------------------------------------------
+
+export async function addTicketTask(input: unknown): Promise<ActionResult<null>> {
+  const session = await getSession();
+  if (!session) return formError(FORBIDDEN);
+
+  const parsed = addTaskSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, fieldErrors: parsed.error.flatten().fieldErrors };
+
+  const ticket = await loadPermissionTicket(parsed.data.ticketNumber);
+  if (!ticket || !can('manageTasks', session.user, ticket)) return formError(FORBIDDEN);
+
+  await addTaskService({
+    ticketNumber: parsed.data.ticketNumber,
+    text: parsed.data.text,
+    byUserId: session.user.id,
+  });
+
+  revalidatePath(ticketPath(parsed.data.ticketNumber));
+  return { ok: true, data: null };
+}
+
+export async function toggleTicketTask(input: unknown): Promise<ActionResult<null>> {
+  const session = await getSession();
+  if (!session) return formError(FORBIDDEN);
+
+  const parsed = toggleTaskSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, fieldErrors: parsed.error.flatten().fieldErrors };
+
+  const ticket = await loadPermissionTicket(parsed.data.ticketNumber);
+  if (!ticket || !can('manageTasks', session.user, ticket)) return formError(FORBIDDEN);
+
+  try {
+    await toggleTaskService({
+      ticketNumber: parsed.data.ticketNumber,
+      taskId: parsed.data.taskId,
+      byUserId: session.user.id,
+    });
+  } catch (error) {
+    if (error instanceof TaskNotFoundError) return formError(error.message);
+    throw error;
+  }
+
+  revalidatePath(ticketPath(parsed.data.ticketNumber));
+  return { ok: true, data: null };
+}
+
+export async function removeTicketTask(input: unknown): Promise<ActionResult<null>> {
+  const session = await getSession();
+  if (!session) return formError(FORBIDDEN);
+
+  const parsed = removeTaskSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, fieldErrors: parsed.error.flatten().fieldErrors };
+
+  const ticket = await loadPermissionTicket(parsed.data.ticketNumber);
+  if (!ticket || !can('manageTasks', session.user, ticket)) return formError(FORBIDDEN);
+
+  try {
+    await removeTaskService({
+      ticketNumber: parsed.data.ticketNumber,
+      taskId: parsed.data.taskId,
+      byUserId: session.user.id,
+    });
+  } catch (error) {
+    if (error instanceof TaskNotFoundError) return formError(error.message);
+    throw error;
+  }
+
+  revalidatePath(ticketPath(parsed.data.ticketNumber));
+  return { ok: true, data: null };
+}
+
+export async function startTicketTimer(input: unknown): Promise<ActionResult<null>> {
+  const session = await getSession();
+  if (!session) return formError(FORBIDDEN);
+
+  const parsed = startTimerSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, fieldErrors: parsed.error.flatten().fieldErrors };
+
+  const ticket = await loadPermissionTicket(parsed.data.ticketNumber);
+  if (!ticket || !can('logTime', session.user, ticket)) return formError(FORBIDDEN);
+
+  try {
+    await startTimerService({ ticketNumber: parsed.data.ticketNumber, userId: session.user.id });
+  } catch (error) {
+    if (error instanceof TimerAlreadyRunningError) return formError(error.message);
+    throw error;
+  }
+
+  revalidatePath(ticketPath(parsed.data.ticketNumber));
+  return { ok: true, data: null };
+}
+
+export async function stopTicketTimer(input: unknown): Promise<ActionResult<{ minutes: number }>> {
+  const session = await getSession();
+  if (!session) return formError(FORBIDDEN);
+
+  const parsed = stopTimerSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, fieldErrors: parsed.error.flatten().fieldErrors };
+
+  const ticket = await loadPermissionTicket(parsed.data.ticketNumber);
+  if (!ticket || !can('logTime', session.user, ticket)) return formError(FORBIDDEN);
+
+  let result: { minutes: number };
+  try {
+    result = await stopTimerService({
+      ticketNumber: parsed.data.ticketNumber,
+      userId: session.user.id,
+    });
+  } catch (error) {
+    if (error instanceof NoRunningTimerError) return formError(error.message);
+    throw error;
+  }
+
+  revalidatePath(ticketPath(parsed.data.ticketNumber));
+  return { ok: true, data: result };
+}
+
+export async function logTicketQuickTime(input: unknown): Promise<ActionResult<null>> {
+  const session = await getSession();
+  if (!session) return formError(FORBIDDEN);
+
+  const parsed = logQuickTimeSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, fieldErrors: parsed.error.flatten().fieldErrors };
+
+  const ticket = await loadPermissionTicket(parsed.data.ticketNumber);
+  if (!ticket || !can('logTime', session.user, ticket)) return formError(FORBIDDEN);
+
+  await logQuickTimeService({
+    ticketNumber: parsed.data.ticketNumber,
+    userId: session.user.id,
+    minutes: parsed.data.minutes,
+  });
+
+  revalidatePath(ticketPath(parsed.data.ticketNumber));
+  return { ok: true, data: null };
+}
+
+export async function addTicketLink(input: unknown): Promise<ActionResult<null>> {
+  const session = await getSession();
+  if (!session) return formError(FORBIDDEN);
+
+  const parsed = addLinkSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, fieldErrors: parsed.error.flatten().fieldErrors };
+
+  const ticket = await loadPermissionTicket(parsed.data.ticketNumber);
+  if (!ticket || !can('link', session.user, ticket)) return formError(FORBIDDEN);
+
+  try {
+    await addLinkService({
+      ticketNumber: parsed.data.ticketNumber,
+      targetTicketNumber: parsed.data.targetTicketNumber,
+      type: parsed.data.type,
+      byUserId: session.user.id,
+    });
+  } catch (error) {
+    if (
+      error instanceof SelfLinkError ||
+      error instanceof LinkedTicketNotFoundError ||
+      error instanceof AlreadyLinkedError
+    ) {
+      return formError(error.message);
+    }
+    throw error;
+  }
+
+  revalidatePath(ticketPath(parsed.data.ticketNumber));
+  revalidatePath(ticketPath(parsed.data.targetTicketNumber));
+  return { ok: true, data: null };
+}
+
+export async function removeTicketLink(input: unknown): Promise<ActionResult<null>> {
+  const session = await getSession();
+  if (!session) return formError(FORBIDDEN);
+
+  const parsed = removeLinkSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, fieldErrors: parsed.error.flatten().fieldErrors };
+
+  const ticket = await loadPermissionTicket(parsed.data.ticketNumber);
+  if (!ticket || !can('link', session.user, ticket)) return formError(FORBIDDEN);
+
+  await removeLinkService({
+    ticketNumber: parsed.data.ticketNumber,
+    targetTicketNumber: parsed.data.targetTicketNumber,
+    type: parsed.data.type,
+    byUserId: session.user.id,
+  });
+
+  revalidatePath(ticketPath(parsed.data.ticketNumber));
+  revalidatePath(ticketPath(parsed.data.targetTicketNumber));
+  return { ok: true, data: null };
 }

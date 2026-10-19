@@ -30,22 +30,23 @@ is no second code path that could show more.
 
 ## Doing things
 
-| Action                         | Requester | Handler (member) | Head of current dept     | Mentioned (rule on) | Passed through | Admin                    |
-| ------------------------------ | --------- | ---------------- | ------------------------ | ------------------- | -------------- | ------------------------ |
-| Reply to requester             | Yes       | Yes              | Yes                      | Yes                 | No             | Yes                      |
-| Add internal note              | No        | Yes              | Yes                      | Yes                 | No             | Yes                      |
-| Read internal notes            | No        | Yes              | Yes                      | Yes                 | Yes            | Yes                      |
-| Change priority or status      | No        | Yes              | Yes                      | No                  | No             | Yes                      |
-| Forward (reason required)      | No        | Yes              | Yes                      | No                  | No             | Yes                      |
-| Resolve, merge, add sub-ticket | No        | Yes              | Yes                      | No                  | No             | Yes                      |
-| Pick up an unassigned ticket   | No        | Yes              | Yes                      | No                  | No             | Yes                      |
-| Assign or reassign anyone      | No        | No               | Yes                      | No                  | No             | Yes                      |
-| Bulk actions                   | No        | No               | Yes                      | No                  | No             | Yes                      |
-| Escalate to next level         | Yes       | Yes              | No (they are the target) | No                  | No             | No (they are the target) |
-| Acknowledge level 1            | No        | No               | Yes                      | No                  | No             | Yes                      |
-| Acknowledge level 2            | No        | No               | No                       | No                  | No             | Yes                      |
-| Turn confidentiality on or off | No        | No               | Yes                      | No                  | No             | Yes                      |
-| Rate or reopen when resolved   | Yes       | No               | No                       | No                  | No             | No                       |
+| Action                          | Requester | Handler (member) | Head of current dept     | Mentioned (rule on) | Passed through | Admin                    |
+| ------------------------------- | --------- | ---------------- | ------------------------ | ------------------- | -------------- | ------------------------ |
+| Reply to requester              | Yes       | Yes              | Yes                      | Yes                 | No             | Yes                      |
+| Add internal note               | No        | Yes              | Yes                      | Yes                 | No             | Yes                      |
+| Read internal notes             | No        | Yes              | Yes                      | Yes                 | Yes            | Yes                      |
+| Change priority or status       | No        | Yes              | Yes                      | No                  | No             | Yes                      |
+| Forward (reason required)       | No        | Yes              | Yes                      | No                  | No             | Yes                      |
+| Resolve, merge, add sub-ticket  | No        | Yes              | Yes                      | No                  | No             | Yes                      |
+| Tasks, time log, linked tickets | No        | Yes              | Yes                      | No                  | No             | Yes                      |
+| Pick up an unassigned ticket    | No        | Yes              | Yes                      | No                  | No             | Yes                      |
+| Assign or reassign anyone       | No        | No               | Yes                      | No                  | No             | Yes                      |
+| Bulk actions                    | No        | No               | Yes                      | No                  | No             | Yes                      |
+| Escalate to next level          | Yes       | Yes              | No (they are the target) | No                  | No             | No (they are the target) |
+| Acknowledge level 1             | No        | No               | Yes                      | No                  | No             | Yes                      |
+| Acknowledge level 2             | No        | No               | No                       | No                  | No             | Yes                      |
+| Turn confidentiality on or off  | No        | No               | Yes                      | No                  | No             | Yes                      |
+| Rate or reopen when resolved    | Yes       | No               | No                       | No                  | No             | No                       |
 
 Notes:
 
@@ -56,6 +57,9 @@ Notes:
   internal notes.
 - On a confidential ticket, losing the role loses access. A cleared assignee, or the
   previous head after a forward, can no longer open it.
+- Tasks, time log and linked tickets aren't in the plan PDF's role table; Phase 6
+  gives them the same rule as "Change priority or status" (handler or admin) since
+  they live in the same Actions aside. Flag if miLife wants something narrower.
 
 ## Administration
 

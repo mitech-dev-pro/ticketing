@@ -70,11 +70,21 @@ enum TicketEventType {
   BLOCKED_BY
   BLOCKS
   RELATED_TO
+  TASK
+  TIME
 }
 
 enum MentionType {
   PERSON
   DEPARTMENT
+}
+
+// TicketLink.type (Phase 6): always create the inverse row (D-06/README: "always
+// create the inverse" — blocked_by <-> blocks; related_to <-> related_to).
+enum TicketLinkType {
+  BLOCKED_BY
+  BLOCKS
+  RELATED_TO
 }
 
 // Fed by the cron jobs in app/api/cron/* (Phase 4): sla-warning writes SLA_WARNING /
@@ -138,6 +148,8 @@ model User {
   outOfOffice         OutOfOffice[]   @relation("OutOfOfficeUser")
   outOfOfficeDelegate OutOfOffice[]   @relation("OutOfOfficeDelegate")
   savedViews          SavedView[]
+  timeEntries         TimeEntry[]
+  ticketTimers        TicketTimer[]
   createdAt           DateTime        @default(now())
   updatedAt           DateTime        @updatedAt
 }
@@ -226,6 +238,11 @@ model Ticket {
   attachments           Attachment[]
   escalations           Escalation[]
   notifications         Notification[]
+  tasks                 Task[]
+  timeEntries           TimeEntry[]
+  timers                TicketTimer[]
+  linksFrom             TicketLink[]    @relation("TicketLinkFrom")
+  linksTo               TicketLink[]    @relation("TicketLinkTo")
   createdAt             DateTime        @default(now())
   updatedAt             DateTime        @updatedAt
 
@@ -398,4 +415,66 @@ model SavedView {
   createdAt DateTime @default(now())
 
   @@unique([userId, name])
+}
+
+// Ticket detail aside "Tasks" checklist (Phase 6). `order` is the display position;
+// reordering only ever rewrites this column, never deletes/recreates rows.
+model Task {
+  id        String   @id @default(cuid())
+  ticketId  Int
+  ticket    Ticket   @relation(fields: [ticketId], references: [number], onDelete: Cascade)
+  text      String
+  done      Boolean  @default(false)
+  order     Int
+  createdAt DateTime @default(now())
+
+  @@index([ticketId])
+}
+
+// A logged, immutable block of time (Phase 6): written either by stopping a
+// TicketTimer or by one of the quick +15m/+30m/+1h buttons. Never updated — a
+// correction is a new entry, same as every other append-only ticket history here.
+model TimeEntry {
+  id        String   @id @default(cuid())
+  ticketId  Int
+  ticket    Ticket   @relation(fields: [ticketId], references: [number], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  minutes   Int
+  createdAt DateTime @default(now())
+
+  @@index([ticketId])
+}
+
+// The in-progress half of "start/stop timer": one open timer per person per ticket
+// (the unique constraint is what "start" is really doing). Deleted the moment
+// "stop" turns it into a TimeEntry, so its mere existence is the running state —
+// safe to read back after a reload or the Phase 5 20s poll (D-10).
+model TicketTimer {
+  id        String   @id @default(cuid())
+  ticketId  Int
+  ticket    Ticket   @relation(fields: [ticketId], references: [number], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  startedAt DateTime @default(now())
+
+  @@unique([ticketId, userId])
+}
+
+// fromId/toId/type always come in a pair the service layer writes together (README:
+// "always create the inverse") — BLOCKED_BY mirrors BLOCKS, RELATED_TO mirrors
+// itself — so either ticket's detail page can read its own linksFrom/linksTo without
+// a second query walking the other direction.
+model TicketLink {
+  id        String         @id @default(cuid())
+  fromId    Int
+  from      Ticket         @relation("TicketLinkFrom", fields: [fromId], references: [number], onDelete: Cascade)
+  toId      Int
+  to        Ticket         @relation("TicketLinkTo", fields: [toId], references: [number], onDelete: Cascade)
+  type      TicketLinkType
+  createdAt DateTime       @default(now())
+
+  @@unique([fromId, toId, type])
+  @@index([fromId])
+  @@index([toId])
 }

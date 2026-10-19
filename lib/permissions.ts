@@ -27,7 +27,10 @@ export type Action =
   | 'rate'
   | 'reopen'
   | 'markRatingFollowedUp' // head/admin dismisses the low-rating follow-up banner
-  | 'bulk';
+  | 'bulk'
+  | 'manageTasks' // add/toggle/remove the Tasks checklist
+  | 'logTime' // start/stop timer, quick time entries
+  | 'link'; // add/remove a Linked tickets row
 
 export type Role = 'MEMBER' | 'HEAD' | 'ADMIN';
 
@@ -127,6 +130,9 @@ const lockedStatusActions: ReadonlySet<Action> = new Set<Action>([
   'escalate',
   'acknowledgeL1',
   'acknowledgeL2',
+  'manageTasks',
+  'logTime',
+  'link',
 ]);
 
 export function can(
@@ -179,6 +185,9 @@ export function can(
     case 'forward':
     case 'resolve':
     case 'merge':
+    case 'manageTasks':
+    case 'logTime':
+    case 'link':
       return isCurrentDepartmentMember || isAdmin;
 
     case 'assign':

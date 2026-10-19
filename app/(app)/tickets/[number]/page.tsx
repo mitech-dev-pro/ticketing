@@ -18,6 +18,12 @@ import { ActionsPanel } from '@/components/tickets/actions-panel';
 import { LowRatingFollowUpBanner, RatingBanner } from '@/components/tickets/rating';
 import { TicketPoller } from '@/components/tickets/ticket-poller';
 import { SplitList } from '@/components/tickets/split-list';
+import { TasksPanel } from '@/components/tickets/tasks-panel';
+import { TimePanel } from '@/components/tickets/time-panel';
+import { LinkedTicketsPanel } from '@/components/tickets/linked-tickets-panel';
+import { listTasks } from '@/lib/services/tasks';
+import { listTimeEntries, runningTimer } from '@/lib/services/time';
+import { isBlocked, listLinks } from '@/lib/services/links';
 import type {
   ConversationEvent,
   JourneyLeg,
@@ -142,27 +148,36 @@ export default async function TicketPage({ params, searchParams }: TicketPagePro
     rate: can('rate', user, permissionTicket),
     markRatingFollowedUp: can('markRatingFollowedUp', user, permissionTicket),
     escalate: can('escalate', user, permissionTicket),
+    manageTasks: can('manageTasks', user, permissionTicket),
+    logTime: can('logTime', user, permissionTicket),
+    link: can('link', user, permissionTicket),
   };
 
   const currentDeptId = currentDepartmentId(permissionTicket);
   const now = new Date();
 
-  const [members, departments, cannedReplies] = await Promise.all([
-    prisma.user.findMany({
-      where: { departmentId: currentDeptId, active: true },
-      select: { id: true, name: true },
-      orderBy: { name: 'asc' },
-    }),
-    prisma.department.findMany({
-      select: { id: true, name: true, hue: true, confidentialByDefault: true },
-      orderBy: { name: 'asc' },
-    }),
-    prisma.cannedReply.findMany({
-      where: { OR: [{ departmentId: currentDeptId }, { departmentId: null }] },
-      select: { id: true, title: true, body: true },
-      orderBy: { title: 'asc' },
-    }),
-  ]);
+  const [members, departments, cannedReplies, tasks, timeEntries, myRunningTimer, links, blocked] =
+    await Promise.all([
+      prisma.user.findMany({
+        where: { departmentId: currentDeptId, active: true },
+        select: { id: true, name: true },
+        orderBy: { name: 'asc' },
+      }),
+      prisma.department.findMany({
+        select: { id: true, name: true, hue: true, confidentialByDefault: true },
+        orderBy: { name: 'asc' },
+      }),
+      prisma.cannedReply.findMany({
+        where: { OR: [{ departmentId: currentDeptId }, { departmentId: null }] },
+        select: { id: true, title: true, body: true },
+        orderBy: { title: 'asc' },
+      }),
+      listTasks(number),
+      listTimeEntries(number),
+      runningTimer({ ticketNumber: number, userId: user.id }),
+      listLinks(number),
+      isBlocked(number),
+    ]);
 
   // Split view (≥1180px, the "wide" breakpoint): opening a ticket from the Inbox
   // keeps a compact list of its department's open tickets alongside it.
@@ -250,6 +265,7 @@ export default async function TicketPage({ params, searchParams }: TicketPagePro
     deadline,
     locked,
     openEscalationLevel: ticket.escalations[0]?.level ?? null,
+    blocked,
   };
 
   return (
@@ -314,6 +330,30 @@ export default async function TicketPage({ params, searchParams }: TicketPagePro
             permissions={permissions}
             members={members}
             departments={departments}
+          />
+
+          <TasksPanel
+            ticketNumber={detail.number}
+            tasks={tasks.map((task) => ({ id: task.id, text: task.text, done: task.done }))}
+            canManage={permissions.manageTasks}
+          />
+
+          <TimePanel
+            ticketNumber={detail.number}
+            entries={timeEntries.map((entry) => ({
+              id: entry.id,
+              userName: entry.user.name,
+              minutes: entry.minutes,
+              createdAt: entry.createdAt.toISOString(),
+            }))}
+            runningTimerStartedAt={myRunningTimer ? myRunningTimer.startedAt.toISOString() : null}
+            canLog={permissions.logTime}
+          />
+
+          <LinkedTicketsPanel
+            ticketNumber={detail.number}
+            links={links}
+            canLink={permissions.link}
           />
         </aside>
       </div>

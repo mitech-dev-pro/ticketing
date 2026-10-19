@@ -68,6 +68,27 @@ export interface TicketPermissions {
   rate: boolean;
   markRatingFollowedUp: boolean;
   escalate: boolean;
+  manageTasks: boolean;
+  logTime: boolean;
+  link: boolean;
+}
+
+export interface TaskItem {
+  id: string;
+  text: string;
+  done: boolean;
+}
+
+export interface TimeEntryItem {
+  id: string;
+  userName: string;
+  minutes: number;
+  createdAt: string;
+}
+
+export interface LinkedTicketItem {
+  type: 'BLOCKED_BY' | 'BLOCKS' | 'RELATED_TO';
+  ticket: { number: number; subject: string; status: TicketStatus };
 }
 
 export interface TicketDetail {
@@ -93,4 +114,6 @@ export interface TicketDetail {
   locked: boolean;
   /** Highest escalation level still unacknowledged, or null if none. */
   openEscalationLevel: number | null;
+  /** README header tag: an unresolved blocked_by link exists. */
+  blocked: boolean;
 }
