@@ -5,6 +5,25 @@ import { formatTicketId } from '@/lib/ids';
 import { cn } from '@/lib/utils';
 import type { TicketDetail } from './types';
 
+function RelatedTicketLinks({ ticket }: { ticket: TicketDetail }) {
+  if (!ticket.parent && !ticket.mergedInto) return null;
+
+  return (
+    <div className="flex flex-wrap items-center gap-3 text-small text-muted">
+      {ticket.parent ? (
+        <Link href={`/tickets/${ticket.parent.number}`} className="hover:underline">
+          Part of {formatTicketId(ticket.parent.number)} · {ticket.parent.subject}
+        </Link>
+      ) : null}
+      {ticket.mergedInto ? (
+        <Link href={`/tickets/${ticket.mergedInto.number}`} className="hover:underline">
+          Merged into {formatTicketId(ticket.mergedInto.number)} · {ticket.mergedInto.subject}
+        </Link>
+      ) : null}
+    </div>
+  );
+}
+
 const DEADLINE_RING_COLOR: Record<TicketDetail['deadline']['tone'], string> = {
   normal: 'var(--color-teal-deep)',
   warning: 'var(--color-high)',
@@ -124,12 +143,14 @@ export function TicketHeader({ ticket }: { ticket: TicketDetail }) {
               </Badge>
             ) : null}
             {ticket.blocked ? <Badge className="bg-high/15 text-high">Blocked</Badge> : null}
+            {ticket.parent ? <Badge>Sub-ticket</Badge> : null}
           </div>
           <h1 className="text-title font-bold text-ink">{ticket.subject}</h1>
           <p className="text-small text-muted">
             {ticket.requester.name} · {ticket.requester.departmentName}
             {ticket.assignee ? ` · Assigned to ${ticket.assignee.name}` : ' · Unassigned'}
           </p>
+          <RelatedTicketLinks ticket={ticket} />
         </div>
 
         {!(ticket.status === 'RESOLVED' || ticket.status === 'CLOSED') ? (

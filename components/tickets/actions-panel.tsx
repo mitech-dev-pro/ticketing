@@ -2,7 +2,7 @@
 
 import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { CheckCircle2, GitMerge, ListPlus, Printer } from 'lucide-react';
+import { CheckCircle2, Printer } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select } from '@/components/ui/select';
 import { useUndoToast } from '@/components/ui/undo-toast';
@@ -10,6 +10,8 @@ import { assignTicket, setTicketPriority } from '@/components/inbox/actions';
 import { resolveTicket } from './actions';
 import { EscalateDialog } from './escalate-dialog';
 import { ForwardDialog } from './forward-dialog';
+import { MergeDialog } from './merge-dialog';
+import { SubTicketDialog, type SubTicketServiceTypeOption } from './sub-ticket-dialog';
 import type { DepartmentOption, MemberOption, TicketDetail, TicketPermissions } from './types';
 
 const PRIORITY_OPTIONS = ['URGENT', 'HIGH', 'MEDIUM', 'LOW'] as const;
@@ -25,9 +27,16 @@ interface ActionsPanelProps {
   permissions: TicketPermissions;
   members: MemberOption[];
   departments: DepartmentOption[];
+  serviceTypes: SubTicketServiceTypeOption[];
 }
 
-export function ActionsPanel({ ticket, permissions, members, departments }: ActionsPanelProps) {
+export function ActionsPanel({
+  ticket,
+  permissions,
+  members,
+  departments,
+  serviceTypes,
+}: ActionsPanelProps) {
   const router = useRouter();
   const { runWithUndo } = useUndoToast();
   const [isPending, startTransition] = useTransition();
@@ -124,26 +133,10 @@ export function ActionsPanel({ ticket, permissions, members, departments }: Acti
             </Button>
           ) : null}
 
-          <Button
-            type="button"
-            variant="ghost"
-            className="w-full justify-start"
-            disabled
-            title="Coming in Phase 6"
-          >
-            <GitMerge size={16} />
-            Merge into another ticket
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            className="w-full justify-start"
-            disabled
-            title="Coming in Phase 6"
-          >
-            <ListPlus size={16} />
-            Add sub-ticket
-          </Button>
+          {permissions.merge ? <MergeDialog ticketNumber={ticket.number} /> : null}
+          {permissions.addSubTicket ? (
+            <SubTicketDialog parentTicketNumber={ticket.number} serviceTypes={serviceTypes} />
+          ) : null}
           <Button
             type="button"
             variant="ghost"

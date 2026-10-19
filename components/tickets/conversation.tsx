@@ -58,6 +58,12 @@ function systemEventText(event: ConversationEvent): string {
     }
     case 'TIME':
       return `${by} logged ${String(meta.minutes)} min`;
+    case 'MERGED':
+      return `${by} merged this ticket into ${String(meta.intoNumber)}`;
+    case 'MERGED_IN':
+      return `${by} merged ${String(meta.fromNumber)} into this ticket`;
+    case 'CHILD':
+      return `${by} added a sub-ticket`;
     case 'MESSAGE':
     case 'NOTE':
       return '';

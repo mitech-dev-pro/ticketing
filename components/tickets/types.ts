@@ -71,6 +71,8 @@ export interface TicketPermissions {
   manageTasks: boolean;
   logTime: boolean;
   link: boolean;
+  merge: boolean;
+  addSubTicket: boolean;
 }
 
 export interface TaskItem {
@@ -89,6 +91,25 @@ export interface TimeEntryItem {
 export interface LinkedTicketItem {
   type: 'BLOCKED_BY' | 'BLOCKS' | 'RELATED_TO';
   ticket: { number: number; subject: string; status: TicketStatus };
+}
+
+export interface SubTicketItem {
+  number: number;
+  subject: string;
+  status: TicketStatus;
+}
+
+export interface PossibleDuplicateItem {
+  number: number;
+  subject: string;
+}
+
+export interface AssetSummary {
+  id: string;
+  type: string;
+  model: string;
+  location: string;
+  status: string;
 }
 
 export interface TicketDetail {
@@ -116,4 +137,8 @@ export interface TicketDetail {
   openEscalationLevel: number | null;
   /** README header tag: an unresolved blocked_by link exists. */
   blocked: boolean;
+  parent: { number: number; subject: string } | null;
+  mergedInto: { number: number; subject: string } | null;
+  asset: AssetSummary | null;
+  policyNumber: string | null;
 }

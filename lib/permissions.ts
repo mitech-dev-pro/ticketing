@@ -20,6 +20,7 @@ export type Action =
   | 'forward'
   | 'resolve'
   | 'merge'
+  | 'addSubTicket'
   | 'escalate' // manual escalation to the next level
   | 'acknowledgeL1'
   | 'acknowledgeL2'
@@ -123,6 +124,7 @@ const lockedStatusActions: ReadonlySet<Action> = new Set<Action>([
   'forward',
   'resolve',
   'merge',
+  'addSubTicket',
   'assign',
   'pickUp',
   'bulk',
@@ -185,6 +187,7 @@ export function can(
     case 'forward':
     case 'resolve':
     case 'merge':
+    case 'addSubTicket':
     case 'manageTasks':
     case 'logTime':
     case 'link':

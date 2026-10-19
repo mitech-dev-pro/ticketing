@@ -44,6 +44,17 @@ import {
   SelfLinkError,
   TicketNotFoundError as LinkedTicketNotFoundError,
 } from '@/lib/services/links';
+import {
+  AlreadyMergedError,
+  mergeTicket as mergeTicketService,
+  SelfMergeError,
+  TicketNotFoundError as MergeTicketNotFoundError,
+} from '@/lib/services/merge';
+import {
+  addSubTicket as addSubTicketService,
+  ParentTicketNotFoundError,
+} from '@/lib/services/sub-tickets';
+import { lookupPolicy, type PolicyLookupResult } from '@/lib/services/policy';
 import { formError, type ActionResult } from '@/lib/validation/action-result';
 import {
   addNoteTicketSchema,
@@ -58,6 +69,9 @@ import {
 import { addTaskSchema, removeTaskSchema, toggleTaskSchema } from '@/lib/validation/tasks';
 import { logQuickTimeSchema, startTimerSchema, stopTimerSchema } from '@/lib/validation/time';
 import { addLinkSchema, removeLinkSchema } from '@/lib/validation/links';
+import { mergeTicketSchema } from '@/lib/validation/merge';
+import { addSubTicketSchema } from '@/lib/validation/sub-tickets';
+import { lookupPolicySchema } from '@/lib/validation/policy';
 
 const FORBIDDEN = "You don't have permission to do that.";
 
@@ -560,4 +574,87 @@ export async function removeTicketLink(input: unknown): Promise<ActionResult<nul
   revalidatePath(ticketPath(parsed.data.ticketNumber));
   revalidatePath(ticketPath(parsed.data.targetTicketNumber));
   return { ok: true, data: null };
+}
+
+// ---------------------------------------------------------------------------------
+// Phase 6: merge, sub-tickets, policy lookup.
+// ---------------------------------------------------------------------------------
+
+export async function mergeTicketIntoAnother(input: unknown): Promise<ActionResult<null>> {
+  const session = await getSession();
+  if (!session) return formError(FORBIDDEN);
+
+  const parsed = mergeTicketSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, fieldErrors: parsed.error.flatten().fieldErrors };
+
+  const ticket = await loadPermissionTicket(parsed.data.ticketNumber);
+  if (!ticket || !can('merge', session.user, ticket)) return formError(FORBIDDEN);
+
+  try {
+    await mergeTicketService({
+      ticketNumber: parsed.data.ticketNumber,
+      intoTicketNumber: parsed.data.intoTicketNumber,
+      byUserId: session.user.id,
+    });
+  } catch (error) {
+    if (
+      error instanceof SelfMergeError ||
+      error instanceof MergeTicketNotFoundError ||
+      error instanceof AlreadyMergedError
+    ) {
+      return formError(error.message);
+    }
+    throw error;
+  }
+
+  revalidatePath(ticketPath(parsed.data.ticketNumber));
+  revalidatePath(ticketPath(parsed.data.intoTicketNumber));
+  revalidatePath('/inbox');
+  return { ok: true, data: null };
+}
+
+export async function addTicketSubTicket(
+  input: unknown,
+): Promise<ActionResult<{ number: number }>> {
+  const session = await getSession();
+  if (!session) return formError(FORBIDDEN);
+
+  const parsed = addSubTicketSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, fieldErrors: parsed.error.flatten().fieldErrors };
+
+  const ticket = await loadPermissionTicket(parsed.data.parentTicketNumber);
+  if (!ticket || !can('addSubTicket', session.user, ticket)) return formError(FORBIDDEN);
+
+  let child: { number: number };
+  try {
+    child = await addSubTicketService({
+      parentTicketNumber: parsed.data.parentTicketNumber,
+      byUserId: session.user.id,
+      serviceTypeId: parsed.data.serviceTypeId,
+      subject: parsed.data.subject,
+      description: parsed.data.description,
+      priority: parsed.data.priority,
+      fields: parsed.data.fields,
+    });
+  } catch (error) {
+    if (error instanceof ParentTicketNotFoundError) return formError(error.message);
+    throw error;
+  }
+
+  revalidatePath(ticketPath(parsed.data.parentTicketNumber));
+  revalidatePath('/inbox');
+  return { ok: true, data: child };
+}
+
+export async function lookupPolicyForTicket(
+  input: unknown,
+): Promise<ActionResult<PolicyLookupResult | null>> {
+  const session = await getSession();
+  if (!session) return formError(FORBIDDEN);
+
+  const parsed = lookupPolicySchema.safeParse(input);
+  if (!parsed.success) return { ok: false, fieldErrors: parsed.error.flatten().fieldErrors };
+
+  const result = await lookupPolicy(parsed.data.query);
+  return { ok: true, data: result };
 }

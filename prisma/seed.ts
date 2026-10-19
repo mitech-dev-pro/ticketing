@@ -15,11 +15,13 @@ import { hash } from '@node-rs/argon2';
 import { prisma } from '@/lib/db';
 import {
   Prisma,
+  type AssetStatus,
   type Branch,
   type Channel,
   type Priority,
   type Role,
   type TicketEventType,
+  type TicketLinkType,
   type TicketStatus,
 } from '@/generated/prisma/client';
 import { computeDueAt, computeFirstResponseDueAt } from '@/lib/sla';
@@ -30,6 +32,9 @@ import serviceTypesData from './seed-data/service-types.json';
 import settingsData from './seed-data/settings.json';
 import ticketsData from './seed-data/tickets.json';
 import cannedRepliesData from './seed-data/canned-replies.json';
+import assetsData from './seed-data/assets.json';
+import policiesData from './seed-data/policies.json';
+import claimsData from './seed-data/claims.json';
 
 interface SeedDepartment {
   slug: string;
@@ -71,6 +76,55 @@ interface SeedCannedReply {
   body: string;
 }
 
+interface SeedAsset {
+  code: string;
+  type: string;
+  model: string;
+  ownerDepartment: string;
+  holderEmail: string | null;
+  location: string;
+  status: string;
+  warranty: string;
+}
+
+interface SeedPolicy {
+  number: string;
+  product: string;
+  premium: string;
+  payMethod: string;
+  since: string;
+  holder: string;
+}
+
+interface SeedClaim {
+  number: string;
+  policyNumber: string;
+}
+
+const ASSET_STATUS: Record<string, AssetStatus> = {
+  'In use': 'IN_USE',
+  Faulty: 'FAULTY',
+  'Under repair': 'UNDER_REPAIR',
+  Retired: 'RETIRED',
+};
+
+interface SeedTicketLink {
+  type: TicketLinkType;
+  toNumber: number;
+}
+
+interface SeedTask {
+  text: string;
+  done: boolean;
+  order: number;
+}
+
+interface SeedTimeEntry {
+  userEmail: string;
+  minutes: number;
+  minutesAgo: number;
+}
+
 interface SeedTicketLeg {
   department: string;
   inMinutesAgo: number;
@@ -106,8 +160,12 @@ interface SeedTicket {
   resolvedMinutesAgo: number | null;
   legs: SeedTicketLeg[];
   events: SeedTicketEvent[];
-  // assetCode, policyNumber, parentNumber, csat, links, tasks, time: deferred to the
-  // phases that model them (assets, merge/sub-tickets, rating) — not seeded yet.
+  assetCode: string | null;
+  policyNumber: string | null;
+  parentNumber: number | null;
+  links: SeedTicketLink[];
+  tasks: SeedTask[];
+  time: SeedTimeEntry[];
 }
 
 function toJson(value: unknown): Prisma.InputJsonValue | undefined {
@@ -256,6 +314,63 @@ async function main() {
     });
   }
 
+  const assets = assetsData as SeedAsset[];
+  for (const asset of assets) {
+    const ownerDepartmentId = departmentIdBySlug.get(asset.ownerDepartment);
+    if (!ownerDepartmentId) {
+      throw new Error(
+        `Asset ${asset.code} references unknown department "${asset.ownerDepartment}"`,
+      );
+    }
+    const holderUserId = asset.holderEmail ? userIdByEmail.get(asset.holderEmail) : null;
+    if (asset.holderEmail && !holderUserId) {
+      throw new Error(`Asset ${asset.code} references unknown holder "${asset.holderEmail}"`);
+    }
+    const status = ASSET_STATUS[asset.status];
+    if (!status) {
+      throw new Error(`Asset ${asset.code} has unknown status "${asset.status}"`);
+    }
+    const data = {
+      type: asset.type,
+      model: asset.model,
+      ownerDepartmentId,
+      holderUserId,
+      location: asset.location,
+      status,
+      warranty: asset.warranty,
+    };
+    await prisma.asset.upsert({
+      where: { id: asset.code },
+      create: { id: asset.code, ...data },
+      update: data,
+    });
+  }
+
+  const policies = policiesData as SeedPolicy[];
+  for (const policy of policies) {
+    const data = {
+      product: policy.product,
+      holder: policy.holder,
+      premium: policy.premium,
+      payMethod: policy.payMethod,
+      since: policy.since,
+    };
+    await prisma.policy.upsert({
+      where: { number: policy.number },
+      create: { number: policy.number, ...data },
+      update: data,
+    });
+  }
+
+  const claims = claimsData as SeedClaim[];
+  for (const claim of claims) {
+    await prisma.claim.upsert({
+      where: { number: claim.number },
+      create: { number: claim.number, policyNumber: claim.policyNumber },
+      update: { policyNumber: claim.policyNumber },
+    });
+  }
+
   const tickets = ticketsData as SeedTicket[];
   const [slaSettings, holidays] = await Promise.all([getSlaSettings(), getHolidays()]);
 
@@ -263,6 +378,9 @@ async function main() {
   let eventCount = 0;
   let mentionCount = 0;
   let escalationCount = 0;
+  let taskCount = 0;
+  let timeEntryCount = 0;
+  let linkCount = 0;
 
   for (const seedTicket of tickets) {
     const requesterId = userIdByEmail.get(seedTicket.requesterEmail);
@@ -313,6 +431,17 @@ async function main() {
     const pausedAt = seedTicket.status === 'AWAITING_REQUESTER' ? now : null;
     const pausedMs = 0;
 
+    if (seedTicket.assetCode && !assets.some((asset) => asset.code === seedTicket.assetCode)) {
+      throw new Error(
+        `Ticket ${seedTicket.number} references unknown asset "${seedTicket.assetCode}"`,
+      );
+    }
+
+    const assetAndPolicy = {
+      assetId: seedTicket.assetCode,
+      policyNumber: seedTicket.policyNumber,
+    };
+
     await prisma.ticket.upsert({
       where: { number: seedTicket.number },
       create: {
@@ -335,6 +464,7 @@ async function main() {
         resolvedAt,
         pausedAt,
         pausedMs,
+        ...assetAndPolicy,
       },
       update: {
         subject: seedTicket.subject,
@@ -355,6 +485,7 @@ async function main() {
         resolvedAt,
         pausedAt,
         pausedMs,
+        ...assetAndPolicy,
       },
     });
 
@@ -463,10 +594,61 @@ async function main() {
         }
       }
     }
+
+    await prisma.task.deleteMany({ where: { ticketId: seedTicket.number } });
+    for (const task of seedTicket.tasks) {
+      await prisma.task.create({
+        data: {
+          ticketId: seedTicket.number,
+          text: task.text,
+          done: task.done,
+          order: task.order,
+        },
+      });
+      taskCount++;
+    }
+
+    await prisma.timeEntry.deleteMany({ where: { ticketId: seedTicket.number } });
+    for (const entry of seedTicket.time) {
+      const userId = userIdByEmail.get(entry.userEmail);
+      if (!userId) {
+        throw new Error(
+          `Ticket ${seedTicket.number} time entry references unknown user "${entry.userEmail}"`,
+        );
+      }
+      await prisma.timeEntry.create({
+        data: {
+          ticketId: seedTicket.number,
+          userId,
+          minutes: entry.minutes,
+          createdAt: minutesAgo(entry.minutesAgo),
+        },
+      });
+      timeEntryCount++;
+    }
+
+    await prisma.ticketLink.deleteMany({ where: { fromId: seedTicket.number } });
+    for (const link of seedTicket.links) {
+      await prisma.ticketLink.create({
+        data: { fromId: seedTicket.number, toId: link.toNumber, type: link.type },
+      });
+      linkCount++;
+    }
+  }
+
+  // Second pass: parentId is set only after every ticket exists, since it's a
+  // self-referencing foreign key and sub-tickets can appear before their parent in
+  // the seed array.
+  for (const seedTicket of tickets) {
+    if (seedTicket.parentNumber === null) continue;
+    await prisma.ticket.update({
+      where: { number: seedTicket.number },
+      data: { parentId: seedTicket.parentNumber },
+    });
   }
 
   console.log(
-    `Seeded ${departments.length} departments, ${people.length} people, ${serviceTypes.length} service types, ${cannedReplies.length} canned replies, ${Object.keys(settings).length} settings, ${tickets.length} tickets, ${legCount} legs, ${eventCount} events, ${mentionCount} mentions, ${escalationCount} escalations.`,
+    `Seeded ${departments.length} departments, ${people.length} people, ${serviceTypes.length} service types, ${cannedReplies.length} canned replies, ${Object.keys(settings).length} settings, ${assets.length} assets, ${policies.length} policies, ${claims.length} claims, ${tickets.length} tickets, ${legCount} legs, ${eventCount} events, ${mentionCount} mentions, ${escalationCount} escalations, ${taskCount} tasks, ${timeEntryCount} time entries, ${linkCount} links.`,
   );
 }
 

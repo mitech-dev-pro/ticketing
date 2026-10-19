@@ -21,9 +21,16 @@ import { SplitList } from '@/components/tickets/split-list';
 import { TasksPanel } from '@/components/tickets/tasks-panel';
 import { TimePanel } from '@/components/tickets/time-panel';
 import { LinkedTicketsPanel } from '@/components/tickets/linked-tickets-panel';
+import { SubTicketsList } from '@/components/tickets/sub-tickets-list';
+import { DuplicatePanel } from '@/components/tickets/duplicate-panel';
+import { AssetPanel } from '@/components/tickets/asset-panel';
+import { PolicyLookupPanel } from '@/components/tickets/policy-lookup-panel';
 import { listTasks } from '@/lib/services/tasks';
 import { listTimeEntries, runningTimer } from '@/lib/services/time';
 import { isBlocked, listLinks } from '@/lib/services/links';
+import { findPossibleDuplicates } from '@/lib/services/merge';
+import { listSubTickets } from '@/lib/services/sub-tickets';
+import { lookupPolicy } from '@/lib/services/policy';
 import type {
   ConversationEvent,
   JourneyLeg,
@@ -81,6 +88,12 @@ export default async function TicketPage({ params, searchParams }: TicketPagePro
       requesterDepartment: { select: { name: true } },
       assignee: { select: { id: true, name: true } },
       serviceType: { select: { name: true, fields: true } },
+      parent: { select: { number: true, subject: true } },
+      mergedInto: { select: { number: true, subject: true } },
+      policyNumber: true,
+      asset: {
+        select: { id: true, type: true, model: true, location: true, status: true },
+      },
       legs: {
         select: {
           id: true,
@@ -151,33 +164,63 @@ export default async function TicketPage({ params, searchParams }: TicketPagePro
     manageTasks: can('manageTasks', user, permissionTicket),
     logTime: can('logTime', user, permissionTicket),
     link: can('link', user, permissionTicket),
+    merge: can('merge', user, permissionTicket),
+    addSubTicket: can('addSubTicket', user, permissionTicket),
   };
 
   const currentDeptId = currentDepartmentId(permissionTicket);
   const now = new Date();
 
-  const [members, departments, cannedReplies, tasks, timeEntries, myRunningTimer, links, blocked] =
-    await Promise.all([
-      prisma.user.findMany({
-        where: { departmentId: currentDeptId, active: true },
-        select: { id: true, name: true },
-        orderBy: { name: 'asc' },
-      }),
-      prisma.department.findMany({
-        select: { id: true, name: true, hue: true, confidentialByDefault: true },
-        orderBy: { name: 'asc' },
-      }),
-      prisma.cannedReply.findMany({
-        where: { OR: [{ departmentId: currentDeptId }, { departmentId: null }] },
-        select: { id: true, title: true, body: true },
-        orderBy: { title: 'asc' },
-      }),
-      listTasks(number),
-      listTimeEntries(number),
-      runningTimer({ ticketNumber: number, userId: user.id }),
-      listLinks(number),
-      isBlocked(number),
-    ]);
+  const [
+    members,
+    departments,
+    cannedReplies,
+    tasks,
+    timeEntries,
+    myRunningTimer,
+    links,
+    blocked,
+    subTickets,
+    possibleDuplicates,
+    policyLookup,
+    serviceTypes,
+  ] = await Promise.all([
+    prisma.user.findMany({
+      where: { departmentId: currentDeptId, active: true },
+      select: { id: true, name: true },
+      orderBy: { name: 'asc' },
+    }),
+    prisma.department.findMany({
+      select: { id: true, name: true, hue: true, confidentialByDefault: true },
+      orderBy: { name: 'asc' },
+    }),
+    prisma.cannedReply.findMany({
+      where: { OR: [{ departmentId: currentDeptId }, { departmentId: null }] },
+      select: { id: true, title: true, body: true },
+      orderBy: { title: 'asc' },
+    }),
+    listTasks(number),
+    listTimeEntries(number),
+    runningTimer({ ticketNumber: number, userId: user.id }),
+    listLinks(number),
+    isBlocked(number),
+    listSubTickets(number),
+    can('merge', user, permissionTicket) &&
+    !(ticket.status === 'RESOLVED' || ticket.status === 'CLOSED')
+      ? findPossibleDuplicates({
+          ticketNumber: number,
+          subject: ticket.subject,
+          currentDepartmentId: currentDeptId,
+          user,
+        })
+      : Promise.resolve([]),
+    ticket.policyNumber ? lookupPolicy(ticket.policyNumber) : Promise.resolve(null),
+    prisma.serviceType.findMany({
+      where: { departmentId: currentDeptId },
+      select: { id: true, name: true, defaultPriority: true, fields: true },
+      orderBy: { name: 'asc' },
+    }),
+  ]);
 
   // Split view (≥1180px, the "wide" breakpoint): opening a ticket from the Inbox
   // keeps a compact list of its department's open tickets alongside it.
@@ -266,6 +309,10 @@ export default async function TicketPage({ params, searchParams }: TicketPagePro
     locked,
     openEscalationLevel: ticket.escalations[0]?.level ?? null,
     blocked,
+    parent: ticket.parent,
+    mergedInto: ticket.mergedInto,
+    asset: ticket.asset,
+    policyNumber: ticket.policyNumber,
   };
 
   return (
@@ -276,6 +323,12 @@ export default async function TicketPage({ params, searchParams }: TicketPagePro
       <div className="flex min-w-0 flex-1 flex-col gap-5 lg:flex-row lg:items-start">
         <div className="flex min-w-0 flex-1 flex-col gap-5">
           <TicketHeader ticket={detail} />
+
+          {possibleDuplicates.length > 0 ? (
+            <DuplicatePanel ticketNumber={detail.number} duplicates={possibleDuplicates} />
+          ) : null}
+
+          {subTickets.length > 0 ? <SubTicketsList subTickets={subTickets} /> : null}
 
           {detail.status === 'RESOLVED' || detail.status === 'CLOSED' ? (
             <>
@@ -330,6 +383,7 @@ export default async function TicketPage({ params, searchParams }: TicketPagePro
             permissions={permissions}
             members={members}
             departments={departments}
+            serviceTypes={serviceTypes}
           />
 
           <TasksPanel
@@ -355,6 +409,10 @@ export default async function TicketPage({ params, searchParams }: TicketPagePro
             links={links}
             canLink={permissions.link}
           />
+
+          {detail.asset ? <AssetPanel asset={detail.asset} /> : null}
+
+          <PolicyLookupPanel initialResult={policyLookup} />
         </aside>
       </div>
     </div>
