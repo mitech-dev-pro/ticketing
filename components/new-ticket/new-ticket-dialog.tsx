@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Plus, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -33,7 +33,16 @@ function loadDraft(): NewTicketDraft {
   }
 }
 
-export function NewTicketDialog({ data }: { data: NewTicketData }) {
+interface NewTicketDialogProps {
+  data: NewTicketData;
+  /** Department pages' "New request to X" reuses this dialog with its own trigger
+   * button and jumps straight to Step 2 pre-scoped to that department, instead of the
+   * default "+ New ticket" button and Step 1 classifier. */
+  trigger?: ReactNode;
+  initialDepartmentId?: string;
+}
+
+export function NewTicketDialog({ data, trigger, initialDepartmentId }: NewTicketDialogProps) {
   const [open, setOpen] = useState(false);
   // README: "Unsent draft restored on reopen" — loaded once, lazily, from localStorage
   // (the dialog's content isn't in the DOM while closed, so there's no hydration
@@ -41,12 +50,18 @@ export function NewTicketDialog({ data }: { data: NewTicketData }) {
   // (see handleSubmitted).
   const [draft, setDraft] = useState<NewTicketDraft>(loadDraft);
   const [step, setStep] = useState<'suggest' | 'form'>(() =>
-    draft.serviceTypeId ? 'form' : 'suggest',
+    initialDepartmentId || draft.serviceTypeId ? 'form' : 'suggest',
   );
 
   useEffect(() => {
     window.localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draft));
   }, [draft]);
+
+  useEffect(() => {
+    if (initialDepartmentId && !draft.serviceTypeId) goToStep2();
+    // Only ever want this on mount, with whatever draft/initialDepartmentId came in.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function patchDraft(patch: Partial<NewTicketDraft>) {
     setDraft((current) => ({ ...current, ...patch }));
@@ -54,11 +69,12 @@ export function NewTicketDialog({ data }: { data: NewTicketData }) {
 
   function goToStep2(withServiceType?: NewTicketServiceType) {
     setDraft((current) => {
+      const fallbackDepartmentId = initialDepartmentId ?? data.departments[0]?.id;
       const serviceType =
         withServiceType ??
         (current.serviceTypeId
           ? data.serviceTypes.find((st) => st.id === current.serviceTypeId)
-          : data.serviceTypes.find((st) => st.departmentId === data.departments[0]?.id));
+          : data.serviceTypes.find((st) => st.departmentId === fallbackDepartmentId));
       const department = serviceType
         ? data.departments.find((d) => d.id === serviceType.departmentId)
         : undefined;
@@ -85,10 +101,12 @@ export function NewTicketDialog({ data }: { data: NewTicketData }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="mx-3 mt-3 mb-1 justify-start gap-2">
-          <Plus size={18} />
-          New ticket
-        </Button>
+        {trigger ?? (
+          <Button className="mx-3 mt-3 mb-1 justify-start gap-2">
+            <Plus size={18} />
+            New ticket
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent>
         <div className="flex items-start justify-between gap-4 border-b border-line px-5 py-4">

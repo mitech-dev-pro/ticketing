@@ -2,7 +2,9 @@
 
 import { revalidatePath } from 'next/cache';
 import { getSession } from '@/lib/auth';
+import { prisma } from '@/lib/db';
 import { can } from '@/lib/permissions';
+import { formatDeadline } from '@/lib/dates';
 import {
   assign as assignService,
   pickUp as pickUpService,
@@ -21,6 +23,8 @@ import {
   bulkAssignTicketsSchema,
   bulkResolveTicketsSchema,
 } from '@/lib/validation/tickets';
+import { deleteSavedView as deleteSavedViewService, saveView } from '@/lib/services/saved-views';
+import { deleteSavedViewSchema, saveViewSchema } from '@/lib/validation/saved-views';
 
 const FORBIDDEN = "You don't have permission to do that.";
 
@@ -162,4 +166,83 @@ export async function bulkResolveTickets(
 
   revalidatePath('/inbox');
   return { ok: true, data: { updated } };
+}
+
+export async function saveCurrentView(input: unknown): Promise<ActionResult<{ id: string }>> {
+  const session = await getSession();
+  if (!session) return formError(FORBIDDEN);
+
+  const parsed = saveViewSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, fieldErrors: parsed.error.flatten().fieldErrors };
+
+  const result = await saveView({
+    userId: session.user.id,
+    name: parsed.data.name,
+    filters: parsed.data.filters,
+  });
+
+  revalidatePath('/inbox');
+  return { ok: true, data: result };
+}
+
+export async function removeSavedView(input: unknown): Promise<ActionResult<null>> {
+  const session = await getSession();
+  if (!session) return formError(FORBIDDEN);
+
+  const parsed = deleteSavedViewSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, fieldErrors: parsed.error.flatten().fieldErrors };
+
+  await deleteSavedViewService({ id: parsed.data.id, userId: session.user.id });
+
+  revalidatePath('/inbox');
+  return { ok: true, data: null };
+}
+
+export interface TicketPreview {
+  departmentName: string;
+  deadlineLabel: string;
+  lastMessage: string | null;
+}
+
+/** README: "Hover a row 450ms -> preview card (dept bar, status, last message 3-line
+ * clamp, route, tasks, SLA)." Tasks aren't modeled yet (Phase 6), so this covers the
+ * rest. A note's body is only included when the viewer can readNotes — same rule the
+ * ticket detail page's conversation already applies. */
+export async function getTicketPreview(ticketNumber: number): Promise<ActionResult<TicketPreview>> {
+  const session = await getSession();
+  if (!session) return formError(FORBIDDEN);
+
+  const ticket = await loadPermissionTicket(ticketNumber);
+  if (!ticket || !can('view', session.user, ticket)) return formError(FORBIDDEN);
+
+  const canReadNotes = can('readNotes', session.user, ticket);
+
+  const [full, events] = await Promise.all([
+    prisma.ticket.findUniqueOrThrow({
+      where: { number: ticketNumber },
+      select: {
+        dueAt: true,
+        createdAt: true,
+        legs: { where: { outAt: null }, select: { department: { select: { name: true } } } },
+      },
+    }),
+    prisma.ticketEvent.findMany({
+      where: { ticketId: ticketNumber, type: { in: ['MESSAGE', 'NOTE'] } },
+      orderBy: { createdAt: 'desc' },
+      take: 5,
+      select: { type: true, body: true },
+    }),
+  ]);
+
+  const lastMessage = events.find((event) => event.type === 'MESSAGE' || canReadNotes);
+  const deadline = formatDeadline(full.dueAt, full.createdAt);
+
+  return {
+    ok: true,
+    data: {
+      departmentName: full.legs[0]?.department.name ?? '',
+      deadlineLabel: deadline.label,
+      lastMessage: lastMessage?.body ?? null,
+    },
+  };
 }

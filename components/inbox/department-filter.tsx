@@ -6,9 +6,11 @@ import { Select } from '@/components/ui/select';
 export function DepartmentFilter({
   departments,
   value,
+  basePath = '/inbox',
 }: {
   departments: { id: string; name: string }[];
   value: string;
+  basePath?: string;
 }) {
   const router = useRouter();
 
@@ -19,7 +21,7 @@ export function DepartmentFilter({
       onChange={(event) => {
         const params = new URLSearchParams(window.location.search);
         params.set('department', event.target.value);
-        router.push(`/inbox?${params.toString()}`);
+        router.push(`${basePath}?${params.toString()}`);
       }}
     >
       {departments.map((department) => (

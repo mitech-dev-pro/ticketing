@@ -18,6 +18,7 @@ export interface InboxRow {
   confidential: boolean;
   priority: Priority;
   status: TicketStatus;
+  dueAt: string;
   deadlineLabel: string;
   deadlineAbsolute: string;
   deadlineTone: DeadlineTone;

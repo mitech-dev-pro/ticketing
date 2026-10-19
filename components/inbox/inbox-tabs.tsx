@@ -10,10 +10,12 @@ interface InboxTabsProps {
   activeTab: InboxTab;
   counts: { id: InboxTab; count: number }[];
   priority?: string;
-  due4h: boolean;
+  /** Hours from now a ticket must be due within to match the "Due within" chip, or
+   * null when the filter isn't active. Home's "Due in 24h" card links here with 24. */
+  dueHours: number | null;
 }
 
-export function InboxTabs({ activeTab, counts, priority, due4h }: InboxTabsProps) {
+export function InboxTabs({ activeTab, counts, priority, dueHours }: InboxTabsProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -67,18 +69,18 @@ export function InboxTabs({ activeTab, counts, priority, due4h }: InboxTabsProps
         type="button"
         onClick={() =>
           navigate((params) => {
-            if (due4h) params.delete('due');
+            if (dueHours !== null) params.delete('due');
             else params.set('due', '4h');
           })
         }
         className={cn(
           'rounded-chip border px-3 py-1.5 text-small font-medium transition-colors',
-          due4h
+          dueHours !== null
             ? 'border-teal-deep bg-teal-deep/10 text-teal-deep'
             : 'border-line text-muted hover:text-ink',
         )}
       >
-        Due within 4h
+        Due within {dueHours ?? 4}h
       </button>
     </div>
   );

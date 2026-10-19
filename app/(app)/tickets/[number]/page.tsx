@@ -3,7 +3,12 @@ import { notFound, redirect } from 'next/navigation';
 import { Sparkles } from 'lucide-react';
 import { getSession } from '@/lib/auth';
 import { prisma } from '@/lib/db';
-import { can, currentDepartmentId, type PermissionTicket } from '@/lib/permissions';
+import {
+  can,
+  currentDepartmentId,
+  visibleTicketsWhere,
+  type PermissionTicket,
+} from '@/lib/permissions';
 import { formatDeadline } from '@/lib/dates';
 import { formatTicketId, parseTicketId } from '@/lib/ids';
 import { TicketHeader } from '@/components/tickets/ticket-header';
@@ -12,6 +17,7 @@ import { Composer } from '@/components/tickets/composer';
 import { ActionsPanel } from '@/components/tickets/actions-panel';
 import { LowRatingFollowUpBanner, RatingBanner } from '@/components/tickets/rating';
 import { TicketPoller } from '@/components/tickets/ticket-poller';
+import { SplitList } from '@/components/tickets/split-list';
 import type {
   ConversationEvent,
   JourneyLeg,
@@ -20,8 +26,11 @@ import type {
   TicketPermissions,
 } from '@/components/tickets/types';
 
+const OPEN_STATUSES = ['OPEN', 'IN_PROGRESS', 'AWAITING_REQUESTER'] as const;
+
 interface TicketPageProps {
   params: Promise<{ number: string }>;
+  searchParams: Promise<{ from?: string }>;
 }
 
 export async function generateMetadata({ params }: TicketPageProps): Promise<Metadata> {
@@ -34,12 +43,13 @@ export async function generateMetadata({ params }: TicketPageProps): Promise<Met
   };
 }
 
-export default async function TicketPage({ params }: TicketPageProps) {
+export default async function TicketPage({ params, searchParams }: TicketPageProps) {
   const session = await getSession();
   if (!session) redirect('/sign-in');
   const user = session.user;
 
   const { number: raw } = await params;
+  const { from } = await searchParams;
   const number = parseTicketId(raw);
   if (!number) notFound();
 
@@ -154,6 +164,24 @@ export default async function TicketPage({ params }: TicketPageProps) {
     }),
   ]);
 
+  // Split view (≥1180px, the "wide" breakpoint): opening a ticket from the Inbox
+  // keeps a compact list of its department's open tickets alongside it.
+  const splitListRows =
+    from === 'inbox'
+      ? await prisma.ticket.findMany({
+          where: {
+            AND: [
+              visibleTicketsWhere(user),
+              { legs: { some: { departmentId: currentDeptId, outAt: null } } },
+              { status: { in: [...OPEN_STATUSES] } },
+            ],
+          },
+          select: { number: true, subject: true, priority: true, status: true },
+          orderBy: [{ priority: 'asc' }, { dueAt: 'asc' }],
+          take: 50,
+        })
+      : null;
+
   // D-07/PERMISSIONS.md: a note never reaches the requester — filtered out here,
   // server-side, rather than just hidden in the UI.
   const visibleEvents = permissions.readNotes
@@ -225,64 +253,70 @@ export default async function TicketPage({ params }: TicketPageProps) {
   };
 
   return (
-    <div className="flex flex-col gap-5 lg:flex-row lg:items-start">
+    <div className="flex flex-col gap-5 wide:flex-row wide:items-start">
       <TicketPoller />
-      <div className="flex min-w-0 flex-1 flex-col gap-5">
-        <TicketHeader ticket={detail} />
+      {splitListRows ? <SplitList rows={splitListRows} activeNumber={detail.number} /> : null}
 
-        {detail.status === 'RESOLVED' || detail.status === 'CLOSED' ? (
-          <>
-            <RatingBanner
-              ticketNumber={detail.number}
-              csat={detail.csat}
-              canRate={permissions.rate}
-              canReopen={permissions.reopen}
-            />
-            <LowRatingFollowUpBanner
-              ticketNumber={detail.number}
-              csat={detail.csat}
-              ratingFollowedUpAt={detail.ratingFollowedUpAt}
-              canMarkFollowedUp={permissions.markRatingFollowedUp}
-            />
-          </>
-        ) : null}
+      <div className="flex min-w-0 flex-1 flex-col gap-5 lg:flex-row lg:items-start">
+        <div className="flex min-w-0 flex-1 flex-col gap-5">
+          <TicketHeader ticket={detail} />
 
-        <div className="max-w-[820px]">
-          <Conversation ticketNumber={detail.number} events={events} />
-        </div>
+          {detail.status === 'RESOLVED' || detail.status === 'CLOSED' ? (
+            <>
+              <RatingBanner
+                ticketNumber={detail.number}
+                csat={detail.csat}
+                canRate={permissions.rate}
+                canReopen={permissions.reopen}
+              />
+              <LowRatingFollowUpBanner
+                ticketNumber={detail.number}
+                csat={detail.csat}
+                ratingFollowedUpAt={detail.ratingFollowedUpAt}
+                canMarkFollowedUp={permissions.markRatingFollowedUp}
+              />
+            </>
+          ) : null}
 
-        {!detail.locked ? (
           <div className="max-w-[820px]">
-            <Composer
-              ticketNumber={detail.number}
-              requesterName={detail.requester.name}
-              canReply={permissions.reply}
-              canAddNote={permissions.addNote}
-              cannedReplies={cannedReplies}
-              signature={user.signature}
-            />
+            <Conversation ticketNumber={detail.number} events={events} />
           </div>
-        ) : null}
-      </div>
 
-      <aside className="flex w-full shrink-0 flex-col gap-4 lg:w-[300px]">
-        <div className="rounded-card border border-line bg-surface p-4">
-          <div className="mb-2 flex items-center justify-between">
-            <h2 className="flex items-center gap-1.5 text-label font-mono uppercase tracking-wide text-faint">
-              <Sparkles size={13} />
-              AI assist
-            </h2>
-          </div>
-          <p className="text-small text-muted">Coming in Phase 9. Check before using once live.</p>
+          {!detail.locked ? (
+            <div className="max-w-[820px]">
+              <Composer
+                ticketNumber={detail.number}
+                requesterName={detail.requester.name}
+                canReply={permissions.reply}
+                canAddNote={permissions.addNote}
+                cannedReplies={cannedReplies}
+                signature={user.signature}
+              />
+            </div>
+          ) : null}
         </div>
 
-        <ActionsPanel
-          ticket={detail}
-          permissions={permissions}
-          members={members}
-          departments={departments}
-        />
-      </aside>
+        <aside className="flex w-full shrink-0 flex-col gap-4 lg:w-[300px]">
+          <div className="rounded-card border border-line bg-surface p-4">
+            <div className="mb-2 flex items-center justify-between">
+              <h2 className="flex items-center gap-1.5 text-label font-mono uppercase tracking-wide text-faint">
+                <Sparkles size={13} />
+                AI assist
+              </h2>
+            </div>
+            <p className="text-small text-muted">
+              Coming in Phase 9. Check before using once live.
+            </p>
+          </div>
+
+          <ActionsPanel
+            ticket={detail}
+            permissions={permissions}
+            members={members}
+            departments={departments}
+          />
+        </aside>
+      </div>
     </div>
   );
 }

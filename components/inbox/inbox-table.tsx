@@ -14,6 +14,7 @@ import {
   setTicketPriority,
   setTicketStatus,
 } from './actions';
+import { HoverPreview } from './hover-preview';
 import type { DepartmentMember, InboxRow } from './types';
 
 const PRIORITY_OPTIONS = ['URGENT', 'HIGH', 'MEDIUM', 'LOW'] as const;
@@ -223,19 +224,24 @@ export function InboxTable({ rows, members, canManageDept, canBulkActions }: Inb
                   </td>
                 ) : null}
                 <td className="px-3 py-2.5 align-top">
-                  <Link href={`/tickets/${row.number}`} className="block hover:underline">
-                    <div className="font-mono text-label text-muted">
-                      {formatTicketId(row.number)}
-                    </div>
-                    <div className="font-medium text-ink">
-                      {row.subject}
-                      {row.confidential ? (
-                        <span className="ml-1.5 rounded-chip bg-line px-1.5 py-0.5 text-label font-mono uppercase text-muted">
-                          Confidential
-                        </span>
-                      ) : null}
-                    </div>
-                  </Link>
+                  <HoverPreview ticketNumber={row.number} status={row.status}>
+                    <Link
+                      href={`/tickets/${row.number}?from=inbox`}
+                      className="block hover:underline"
+                    >
+                      <div className="font-mono text-label text-muted">
+                        {formatTicketId(row.number)}
+                      </div>
+                      <div className="font-medium text-ink">
+                        {row.subject}
+                        {row.confidential ? (
+                          <span className="ml-1.5 rounded-chip bg-line px-1.5 py-0.5 text-label font-mono uppercase text-muted">
+                            Confidential
+                          </span>
+                        ) : null}
+                      </div>
+                    </Link>
+                  </HoverPreview>
                   <div className="text-small text-muted">
                     {row.requesterName} · {row.requesterDepartmentName}
                   </div>

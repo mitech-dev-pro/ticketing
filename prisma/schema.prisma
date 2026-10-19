@@ -137,6 +137,7 @@ model User {
   notifications       Notification[]
   outOfOffice         OutOfOffice[]   @relation("OutOfOfficeUser")
   outOfOfficeDelegate OutOfOffice[]   @relation("OutOfOfficeDelegate")
+  savedViews          SavedView[]
   createdAt           DateTime        @default(now())
   updatedAt           DateTime        @updatedAt
 }
@@ -233,6 +234,7 @@ model Ticket {
   @@index([assigneeId])
   @@index([requesterDepartmentId])
   @@index([confidential])
+  @@fulltext([subject, description])
 }
 
 // The ticket's journey. The leg with outAt = null is its current department
@@ -382,4 +384,18 @@ model OutOfOffice {
 
   @@index([userId])
   @@index([until])
+}
+
+// Inbox filter-row chips (Phase 5): "+ Save current view" captures the current
+// tab/priority/due-filter combination as named JSON; "x" deletes it. Scoped to the
+// user, not the department, so each person's saved views are their own.
+model SavedView {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  filters   Json
+  createdAt DateTime @default(now())
+
+  @@unique([userId, name])
 }

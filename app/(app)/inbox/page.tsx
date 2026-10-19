@@ -7,6 +7,10 @@ import { formatDeadline } from '@/lib/dates';
 import { InboxTable } from '@/components/inbox/inbox-table';
 import { InboxTabs } from '@/components/inbox/inbox-tabs';
 import { DepartmentFilter } from '@/components/inbox/department-filter';
+import { SavedViews, type SavedViewItem } from '@/components/inbox/saved-views';
+import { ViewModeSwitch, type InboxViewMode } from '@/components/inbox/view-mode-switch';
+import { BoardView } from '@/components/inbox/board-view';
+import { CalendarView } from '@/components/inbox/calendar-view';
 import { INBOX_TABS, type InboxRow, type InboxTab } from '@/components/inbox/types';
 import type { Prisma, Priority } from '@/generated/prisma/client';
 
@@ -17,7 +21,8 @@ export const metadata: Metadata = {
 const PRIORITIES: Priority[] = ['URGENT', 'HIGH', 'MEDIUM', 'LOW'];
 const OPEN_STATUSES = ['OPEN', 'IN_PROGRESS', 'AWAITING_REQUESTER'] as const;
 const CLOSED_STATUSES = ['RESOLVED', 'CLOSED'] as const;
-const FOUR_HOURS_MS = 4 * 60 * 60 * 1000;
+const DUE_HOURS_PATTERN = /^(\d+)h$/;
+const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 
 function tabWhere(tab: InboxTab, userId: string): Prisma.TicketWhereInput {
   switch (tab) {
@@ -34,7 +39,14 @@ function tabWhere(tab: InboxTab, userId: string): Prisma.TicketWhereInput {
 }
 
 interface InboxPageProps {
-  searchParams: Promise<{ tab?: string; priority?: string; due?: string; department?: string }>;
+  searchParams: Promise<{
+    tab?: string;
+    priority?: string;
+    due?: string;
+    department?: string;
+    view?: string;
+    month?: string;
+  }>;
 }
 
 export default async function InboxPage({ searchParams }: InboxPageProps) {
@@ -67,7 +79,10 @@ export default async function InboxPage({ searchParams }: InboxPageProps) {
   const priorityFilter = PRIORITIES.includes(params.priority as Priority)
     ? (params.priority as Priority)
     : undefined;
-  const due4h = params.due === '4h';
+  const dueHoursMatch = params.due ? DUE_HOURS_PATTERN.exec(params.due) : null;
+  const dueHours = dueHoursMatch ? Number(dueHoursMatch[1]) : null;
+  const viewMode: InboxViewMode =
+    params.view === 'board' || params.view === 'calendar' ? params.view : 'list';
   const now = new Date();
 
   const baseWhere: Prisma.TicketWhereInput = {
@@ -79,16 +94,37 @@ export default async function InboxPage({ searchParams }: InboxPageProps) {
 
   const filters: Prisma.TicketWhereInput[] = [];
   if (priorityFilter) filters.push({ priority: priorityFilter });
-  if (due4h) {
+  if (dueHours !== null) {
     filters.push({
-      dueAt: { lte: new Date(now.getTime() + FOUR_HOURS_MS) },
+      dueAt: { lte: new Date(now.getTime() + dueHours * 60 * 60 * 1000) },
       status: { in: [...OPEN_STATUSES] },
     });
   }
 
-  const [tickets, tabCounts, members] = await Promise.all([
+  // Board/Calendar show the department's whole open picture (tabs are a List-only
+  // concept), with the Resolved bucket capped to the last 7 days per the design.
+  const ticketsWhere: Prisma.TicketWhereInput =
+    viewMode === 'list'
+      ? { AND: [baseWhere, tabWhere(activeTab, user.id), ...filters] }
+      : {
+          AND: [
+            baseWhere,
+            ...filters,
+            {
+              OR: [
+                { status: { in: [...OPEN_STATUSES] } },
+                {
+                  status: { in: [...CLOSED_STATUSES] },
+                  resolvedAt: { gte: new Date(now.getTime() - SEVEN_DAYS_MS) },
+                },
+              ],
+            },
+          ],
+        };
+
+  const [tickets, tabCounts, members, savedViewRows] = await Promise.all([
     prisma.ticket.findMany({
-      where: { AND: [baseWhere, tabWhere(activeTab, user.id), ...filters] },
+      where: ticketsWhere,
       select: {
         number: true,
         subject: true,
@@ -121,7 +157,18 @@ export default async function InboxPage({ searchParams }: InboxPageProps) {
       select: { id: true, name: true },
       orderBy: { name: 'asc' },
     }),
+    prisma.savedView.findMany({
+      where: { userId: user.id },
+      select: { id: true, name: true, filters: true },
+      orderBy: { createdAt: 'asc' },
+    }),
   ]);
+
+  const savedViews: SavedViewItem[] = savedViewRows.map((view) => ({
+    id: view.id,
+    name: view.name,
+    filters: view.filters as unknown as SavedViewItem['filters'],
+  }));
 
   const canManageDept = isAdmin || user.departmentId === targetDepartmentId;
   const canBulkActions =
@@ -152,6 +199,7 @@ export default async function InboxPage({ searchParams }: InboxPageProps) {
       confidential: ticket.confidential,
       priority: ticket.priority,
       status: ticket.status,
+      dueAt: ticket.dueAt.toISOString(),
       deadlineLabel: deadline.label,
       deadlineAbsolute: deadline.absolute,
       deadlineTone: deadline.tone,
@@ -182,14 +230,37 @@ export default async function InboxPage({ searchParams }: InboxPageProps) {
         ) : null}
       </div>
 
-      <InboxTabs activeTab={activeTab} counts={tabCounts} priority={priorityFilter} due4h={due4h} />
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <InboxTabs
+          activeTab={activeTab}
+          counts={tabCounts}
+          priority={priorityFilter}
+          dueHours={dueHours}
+        />
+        <ViewModeSwitch active={viewMode} />
+      </div>
 
-      <InboxTable
-        rows={rows}
-        members={members}
-        canManageDept={canManageDept}
-        canBulkActions={canBulkActions}
-      />
+      {viewMode === 'list' ? (
+        <SavedViews
+          views={savedViews}
+          currentTab={activeTab}
+          currentPriority={priorityFilter}
+          currentDueHours={dueHours}
+        />
+      ) : null}
+
+      {viewMode === 'list' ? (
+        <InboxTable
+          rows={rows}
+          members={members}
+          canManageDept={canManageDept}
+          canBulkActions={canBulkActions}
+        />
+      ) : viewMode === 'board' ? (
+        <BoardView rows={rows} canManageDept={canManageDept} />
+      ) : (
+        <CalendarView rows={rows} monthParam={params.month} />
+      )}
     </div>
   );
 }

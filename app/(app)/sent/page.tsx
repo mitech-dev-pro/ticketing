@@ -11,12 +11,23 @@ export const metadata: Metadata = {
   title: 'Sent — miLife Service Desk',
 };
 
-export default async function SentPage() {
+const OPEN_STATUSES = ['OPEN', 'IN_PROGRESS', 'AWAITING_REQUESTER'] as const;
+
+interface SentPageProps {
+  searchParams: Promise<{ status?: string }>;
+}
+
+export default async function SentPage({ searchParams }: SentPageProps) {
   const session = await getSession();
   if (!session) redirect('/sign-in');
+  const params = await searchParams;
+  const openOnly = params.status === 'open';
 
   const tickets = await prisma.ticket.findMany({
-    where: { requesterId: session.user.id },
+    where: {
+      requesterId: session.user.id,
+      ...(openOnly ? { status: { in: [...OPEN_STATUSES] } } : {}),
+    },
     select: {
       number: true,
       subject: true,
@@ -33,16 +44,30 @@ export default async function SentPage() {
 
   return (
     <div className="flex flex-col gap-5">
-      <div>
-        <h1 className="text-title font-bold text-ink">Sent</h1>
-        <p className="mt-1 text-small text-muted">
-          Requests you&apos;ve sent, and where they are now.
-        </p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h1 className="text-title font-bold text-ink">Sent</h1>
+          <p className="mt-1 text-small text-muted">
+            Requests you&apos;ve sent, and where they are now.
+          </p>
+        </div>
+        <Link
+          href={openOnly ? '/sent' : '/sent?status=open'}
+          className={
+            openOnly
+              ? 'rounded-chip border border-teal-deep bg-teal-deep/10 px-3 py-1.5 text-small font-medium text-teal-deep'
+              : 'rounded-chip border border-line px-3 py-1.5 text-small font-medium text-muted hover:text-ink'
+          }
+        >
+          {openOnly ? 'Showing open only' : 'Show open only'}
+        </Link>
       </div>
 
       {tickets.length === 0 ? (
         <div className="flex flex-col items-center gap-2 rounded-card border border-line bg-surface py-16 text-center">
-          <p className="text-subject font-semibold text-ink">Nothing sent yet.</p>
+          <p className="text-subject font-semibold text-ink">
+            {openOnly ? 'Nothing open right now.' : 'Nothing sent yet.'}
+          </p>
           <p className="text-small text-muted">Raise a ticket with &ldquo;+ New ticket&rdquo;.</p>
         </div>
       ) : (

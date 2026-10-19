@@ -1,8 +1,9 @@
 'use client';
 
-import { Menu, Search } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { SheetTrigger } from '@/components/ui/sheet';
 import { NotificationBell } from './notification-bell';
+import { SearchBar } from './search-bar';
 import { ThemeToggle } from './theme-toggle';
 import { UserMenu } from './user-menu';
 import type { Role } from '@/lib/permissions';
@@ -28,15 +29,7 @@ export function Header({ name, role, notifications, unreadCount }: HeaderProps) 
         </button>
       </SheetTrigger>
 
-      <div className="flex flex-1 items-center gap-2 rounded-control bg-subtle px-3 text-ink-2">
-        <Search size={16} />
-        <input
-          type="search"
-          disabled
-          placeholder="Search"
-          className="h-9 w-full bg-transparent text-small text-ink placeholder:text-faint outline-none disabled:cursor-not-allowed"
-        />
-      </div>
+      <SearchBar />
 
       <NotificationBell notifications={notifications} unreadCount={unreadCount} />
 
